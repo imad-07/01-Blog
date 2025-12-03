@@ -2,30 +2,43 @@ package Blog.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-
-@Table(name = "posts", uniqueConstraints = { @UniqueConstraint(columnNames = "id") })
+@Table(name = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = (long) 0;
-    private String author = "";
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userid", nullable = false)
+    private User author;
+
     @Column(length = 200)
-    private String title = "";
+    private String title;
+
     @Column(length = 2500)
-    private String content = "";
+    private String content;
+
     @Column(columnDefinition = "TEXT")
-    private String media = "";
+    private String media;
+
     private LocalDateTime createdAt;
+
     private boolean status;
 
     @PrePersist
@@ -34,7 +47,7 @@ public class Post {
             createdAt = LocalDateTime.now();
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
@@ -66,7 +79,7 @@ public class Post {
         return title;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

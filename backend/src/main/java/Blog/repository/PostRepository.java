@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import Blog.model.Post;
+import Blog.model.User;
 import jakarta.transaction.Transactional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -18,29 +19,29 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findTop20ByIdLessThanAndStatusTrueOrderByIdDesc(long id);
 
     @Query(value = """
-                SELECT p.*
-                FROM posts p
-                WHERE p.status = true
-                  AND p.id < :startId
-                  AND p.author IN (
-                      SELECT u.username
-                      FROM users u
-                      WHERE u.id IN (
-                          SELECT f.followedid
-                          FROM follows f
-                          WHERE f.followerid = :userId
-                      )
+            SELECT p.*
+            FROM posts p
+            WHERE p.status = true
+              AND p.id < :startId
+              AND p.userid IN (
+                  SELECT u.id
+                  FROM users u
+                  WHERE u.id IN (
+                      SELECT f.followedid
+                      FROM follows f
+                      WHERE f.followerid = :userId
                   )
-                ORDER BY p.id DESC
-                LIMIT 20
-            """, nativeQuery = true)
+              )
+            ORDER BY p.id DESC
+            LIMIT 20
+                        """, nativeQuery = true)
     List<Post> findFeedPage(
             @Param("userId") long userId,
             @Param("startId") long startId);
 
-    List<Post> findTop20ByIdLessThanAndAuthorOrderByIdDesc(Long id, String author);
+    List<Post> findTop20ByIdLessThanAndAuthorOrderByIdDesc(Long id, User author);
 
-    List<Post> findTop20ByIdLessThanAndAuthorAndStatusTrueOrderByIdDesc(Long id, String author);
+    List<Post> findTop20ByIdLessThanAndAuthorAndStatusTrueOrderByIdDesc(Long id, User author);
 
     Post findTopByOrderByIdDesc();
 

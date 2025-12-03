@@ -77,4 +77,11 @@ public class AdminController {
         List<Author> ps = adminService.getAdminUsersList(id);
         return ResponseEntity.status(HttpStatus.OK).body(ps);
     }
+
+    @DeleteMapping("/rm-user/{id}")
+    public ResponseEntity<Boolean> DeleteUser(@PathVariable("id") long id) {
+        Boolean result = adminService.DeleteUser(id);
+        return result ? ResponseEntity.status(HttpStatus.OK).body(result)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
 }

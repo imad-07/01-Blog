@@ -50,12 +50,12 @@ public class AdminService {
             report.setId(sr.getId());
             report.setReason(sr.getReason());
             Post p = sr.getPost();
-            User u = userService.getUserByUsername(p.getAuthor()).orElse(null);
-            Author postauthor = new Author(u.getId(),u.getAvatar(), u.getUsername(), u.isStatus());
+            User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
+            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
             ReportPost pr = new ReportPost(p.getId(), p.getTitle(), p.getContent(), postauthor);
             report.setPost(pr);
             User us = sr.getUser();
-            Author a = new Author(u.getId(),us.getAvatar(), us.getUsername(), us.isStatus());
+            Author a = new Author(u.getId(), us.getAvatar(), us.getUsername(), us.isStatus());
             report.setAuthor(a);
             report.setState(sr.isState());
             rs.add(report);
@@ -65,7 +65,7 @@ public class AdminService {
         Panel.setPosts(posts);
         Dashboard dashboard = getDashboard();
         Panel.setDashboard(dashboard);
-        List<Author> users = userService.getUsers(0);
+        List<Author> users = userService.getAdminUsers(0);
         Panel.setUsers(users);
         return Panel;
     }
@@ -75,8 +75,8 @@ public class AdminService {
         List<AdminPost> posts = new ArrayList<>();
         for (Post p : ps) {
             // Get the user who authored the post
-            User u = userService.getUserByUsername(p.getAuthor()).orElse(null);
-            Author postAuthor = new Author(u.getId(),u != null ? u.getAvatar() : null,
+            User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
+            Author postAuthor = new Author(u.getId(), u != null ? u.getAvatar() : null,
                     u != null ? u.getUsername() : null, u != null ? u.isStatus() : false);
 
             // Build the AdminPost object
@@ -102,9 +102,11 @@ public class AdminService {
     public boolean Updatestatus(long id) {
         return postService.Changestatus(id);
     }
-    public boolean UpdateUserStatus(long id){
+
+    public boolean UpdateUserStatus(long id) {
         return userService.togglestatus(id) == 1;
     }
+
     public boolean HandleReport(long id) {
         return reportService.HandleReport(id);
     }
@@ -132,11 +134,11 @@ public class AdminService {
 
         List<User> latestUsers = userService.getLatestUsers();
         List<Author> latestAuthors = latestUsers.stream()
-                .map(u -> new Author(u.getId(),u.getAvatar(), u.getUsername(), u.isStatus()))
+                .map(u -> new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus()))
                 .collect(Collectors.toList());
         dashboard.setLatestusers(latestAuthors);
         User star = followService.mostfolloweduser();
-        Author austar = new Author(star.getId(),star.getAvatar(), star.getUsername(), star.isStatus());
+        Author austar = new Author(star.getId(), star.getAvatar(), star.getUsername(), star.isStatus());
         dashboard.setStar(austar);
         long id = userService.getAdminid();
         PostResponse p = likeService.getMostLikedPost(id);
@@ -155,12 +157,12 @@ public class AdminService {
             report.setId(sr.getId());
             report.setReason(sr.getReason());
             Post p = sr.getPost();
-            User u = userService.getUserByUsername(p.getAuthor()).orElse(null);
-            Author postauthor = new Author(u.getId(),u.getAvatar(), u.getUsername(), u.isStatus());
+            User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
+            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
             ReportPost pr = new ReportPost(p.getId(), p.getTitle(), p.getContent(), postauthor);
             report.setPost(pr);
             User us = sr.getUser();
-            Author a = new Author(u.getId(),us.getAvatar(), us.getUsername(), us.isStatus());
+            Author a = new Author(u.getId(), us.getAvatar(), us.getUsername(), us.isStatus());
             report.setAuthor(a);
             report.setState(sr.isState());
             rs.add(report);
@@ -173,7 +175,12 @@ public class AdminService {
         if (start == 1) {
             return rs;
         }
-        List<Author> users = userService.getUsers(start);
+        List<Author> users = userService.getAdminUsers(start);
         return users;
     }
+
+    public boolean DeleteUser(long id) {
+        return userService.DeleteUser(id);
+    }
+
 }

@@ -50,7 +50,7 @@ public class CommentService {
         }
         Comment cmt = new Comment(user, post, cmnt);
         commentrepository.save(cmt);
-        User reciever = userService.getUserByUsername(post.getAuthor()).orElse(null);
+        User reciever = userService.getUserByUsername(post.getAuthor().getUsername()).orElse(null);
         if (reciever == null) {
             return Errors.Comment_Error.InvalidUser;
         }

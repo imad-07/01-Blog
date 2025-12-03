@@ -67,7 +67,7 @@ public class PostService {
         } else if (!validators.Validatetitle(post.getTitle())) {
             return Errors.Post_Error.InvalidTitle;
         }
-        post.setAuthor(user.getUsername());
+        post.setAuthor(uservice.getUserByUsername(user.getUsername()).orElse(null));
         post.setStatus(true);
         postrepository.save(post);
         return Errors.Post_Error.Success;
@@ -148,7 +148,7 @@ public class PostService {
         if (p == null) {
             return null;
         }
-        User u = uservice.getUserByUsername(p.getAuthor()).orElse(null);
+        User u = uservice.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
         if (u == null) {
             return null;
         }
@@ -168,7 +168,7 @@ public class PostService {
             }
             start = p.getId() + 1;
         }
-        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr.getUsername());
+        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr);
         List<PostResponse> respons = toPostResponseList(posts, usr.getId());
         return respons;
     }
@@ -184,7 +184,7 @@ public class PostService {
             }
             start = p.getId() + 1;
         }
-        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr.getUsername());
+        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr);
         List<PostResponse> respons = toPostResponseList(posts, usr.getId());
         return respons;
     }
@@ -219,7 +219,7 @@ public class PostService {
         response.setLikes(likerepository.countByPostId(post.getId()));
         response.setLiked(isliked);
 
-        User user = uservice.getUserByUsername(post.getAuthor()).orElse(null);
+        User user = uservice.getUserByUsername(post.getAuthor().getUsername()).orElse(null);
         if (user == null)
             return null;
         response.setAuthor(new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus()));
