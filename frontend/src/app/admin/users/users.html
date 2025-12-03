@@ -1,0 +1,106 @@
+<div class="users-container">
+  <!-- Header -->
+  <div class="users-header">
+    <div class="header-content">
+      <h1>👥 Users Management</h1>
+      <p class="subtitle">Manage and monitor user accounts</p>
+    </div>
+
+    <div class="header-stats">
+      <div class="stat">
+        <span class="stat-label">Total Users</span>
+        <span class="stat-value">{{totalusers}}</span>
+      </div>
+      <div class="stat active">
+        <span class="stat-label">Active</span>
+        <span class="stat-value">{{ totalactiveusers }}</span>
+      </div>
+      <div class="stat suspended">
+        <span class="stat-label">Suspended</span>
+        <span class="stat-value">{{ totalsuspendedusers }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="controls">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Search by username or name..." 
+        [value]="searchQuery()"
+        (input)="onSearchChange($event.target.value)"
+        class="search-input">
+      <span class="search-icon">🔍</span>
+    </div>
+
+    <div class="filter-buttons">
+      <button 
+        [class.active]="filterStatus() === 'all'"
+        (click)="onFilterChange('all')"
+        class="filter-btn">
+        All
+      </button>
+
+      <button 
+        [class.active]="filterStatus() === 'active'"
+        (click)="onFilterChange('active')"
+        class="filter-btn active-btn">
+        Active
+      </button>
+
+      <button 
+        [class.active]="filterStatus() === 'suspended'"
+        (click)="onFilterChange('suspended')"
+        class="filter-btn suspended-btn">
+        Suspended
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Users List -->
+  <div *ngIf="!loading()" class="users-list" (scroll)="Userinfinitescroll($event)">
+    <div *ngIf="filteredUsers().length === 0" class="empty-state">
+      <div class="empty-icon">😔</div>
+      <h3>No users found</h3>
+      <p>Try adjusting your search or filter criteria</p>
+    </div>
+
+    <div *ngFor="let user of filteredUsers()" class="user-card">
+      <div class="user-info">
+        <img 
+          [src]="getAvatarUrl(user.avatar)" 
+          [alt]="user.username" 
+          class="user-avatar">
+        <div class="user-details">
+          <h3 class="user-name">{{ user.username }}</h3>
+          <p class="user-username">@{{ user.username }}</p>
+        </div>
+      </div>
+
+      <div class="user-status">
+        <span [class]="'status-badge ' + (user.status ? 'active' : 'suspended')">
+          {{ user.status ? '✓ Active' : '✗ Suspended' }}
+        </span>
+      </div>
+
+      <div class="user-actions">
+        <button 
+          [class]="'toggle-btn ' + (user.status ? 'suspend-btn' : 'activate-btn')"
+          (click)="toggleUserStatus(user)">
+          {{ user.status ? '🚫 Suspend' : '✅ Activate' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Count -->
+  <div *ngIf="!loading() && filteredUsers().length > 0" class="results-info">
+    Showing {{ filteredUsers().length }} of {{ totalusers }} users
+  </div>
+</div>

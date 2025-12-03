@@ -1,0 +1,16 @@
+<header class="app-header">
+  <div class="logo">
+    <p (click)="feed()">MyApp</p>
+  </div>
+
+  <nav class="nav-links">
+    <button (click)="newpost()">AddPost</button>
+    <app-notification></app-notification>
+  </nav>
+
+  <div class="user-actions">
+    <img class="avatar" (click)="profile()" [src]="author.avatar" />
+    <span class="username" (click)="profile()">@{{ author.username }}</span>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+</header>

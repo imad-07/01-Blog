@@ -1,0 +1,53 @@
+<div class="create-post-page">
+  <div class="create-post-card">
+    <h2>Create Post</h2>
+
+    <form (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+      <label for="title">Title</label>
+      <input
+        id="title"
+        [(ngModel)]="title"
+        name="title"
+        type="text"
+        required
+        maxlength="150"
+      />
+
+      <label for="content">Content</label>
+      <textarea
+        id="content"
+        [(ngModel)]="content"
+        name="content"
+        required
+        maxlength="5000"
+      ></textarea>
+
+      <label for="media">Media (optional)</label>
+      <input
+        id="media"
+        type="file"
+        (change)="onFileSelected($event)"
+        accept="image/*,video/*"
+      />
+
+      <div class="media-preview" *ngIf="previewUrl">
+        <img
+          *ngIf="previewType === 'image'"
+          [src]="previewUrl()"
+          alt="Preview"
+        />
+        <video
+          *ngIf="previewType === 'video'"
+          [src]="previewUrl()"
+          controls
+        ></video>
+      </div>
+
+      <button type="submit" class="btn-primary">Post</button>
+    </form>
+
+    <div class="back-link">
+      <button (click) = "onbackClick()">← Back to Feed</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<article class="post-card">
+  <div class="media">
+    <ng-container [ngSwitch]="post.media?.type">
+      <img *ngSwitchCase="'image'" [src]="getMediaUrl(post.media?.url || '')" alt="{{ post.title }}" />
+      <video *ngSwitchCase="'video'" [src]="getMediaUrl(post.media?.url || '')" controls></video>
+    </ng-container>
+  </div>
+
+  <div class="content">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+  </div>
+
+  <div class="meta">
+    <div class="author" (click)="Toprofile(post.author.username)">
+      <img [src]="getAvatarUrl(post.author.avatar)" />
+      <div>
+        <span class="username">@{{ post.author.username }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="stats">
+      <button (click)="onLike()">{{ post.liked ? '❤️' : '🤍' }} {{ post.likes }}</button>
+      <button (click)="toggleComments()">💬 {{ post.cmts }}</button>
+    </div>
+    <button *ngIf="post.author.username === currentUser" class="edit-btn" (click)="onEdit()">Edit</button>
+    <button *ngIf="post.author.username === currentUser" class="report-btn" (click)="Delete(post.id)">Delete</button>
+    <button class="report-btn" (click)="openReportPopup(post.id)">Report</button>
+  </div>
+
+  <!-- Comments component -->
+  <app-post-comments
+    *ngIf="post.showcmts"
+    [postId]="post.id"
+    [comments]="post.comments!"
+    [backendUrl]="backendUrl"
+    [currentuser] = "currentUser">
+  </app-post-comments>
+</article>
+
+<div class="report-popup" *ngIf="showReportPopup && selectedPostId === post.id">
+  <div class="popup-content">
+    <h3>Report Post</h3>
+    <div class="reasons">
+      <button *ngFor="let reason of reportReasons" (click)="submitReport(reason)">
+        {{ reason }}
+      </button>
+    </div>
+    <button class="close-btn" (click)="closeReportPopup()">Cancel</button>
+  </div>
+</div>

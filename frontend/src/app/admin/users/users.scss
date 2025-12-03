@@ -1,0 +1,430 @@
+// users-management.component.scss
+
+// Color variables
+$light-bg: #ffffff;
+$light-bg-secondary: #f8fafc;
+$light-text: #1e293b;
+$light-text-secondary: #64748b;
+$light-border: #e2e8f0;
+
+$dark-bg: #121212;
+$dark-bg-secondary: #0b0b0b;
+$dark-text: #f5f5f5;
+$dark-text-secondary: #b0b0b0;
+$dark-border: #2a2a2a;
+
+$color-active: #10b981;
+$color-suspended: #ef4444;
+$color-highlight: #8b5cf6;
+$color-search: #3b82f6;
+
+.users-container {
+  padding: 2rem;
+  background: $light-bg;
+  color: $light-text;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-bg;
+    color: $dark-text;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header-content {
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, $color-highlight, $color-active);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: $light-text-secondary;
+      margin: 0;
+
+      @media (prefers-color-scheme: dark) {
+        color: $dark-text-secondary;
+      }
+    }
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      background: $light-bg-secondary;
+      border: 1px solid $light-border;
+      border-radius: 8px;
+
+      @media (prefers-color-scheme: dark) {
+        background: $dark-bg-secondary;
+        border-color: $dark-border;
+      }
+
+      .stat-label {
+        font-size: 0.75rem;
+        color: $light-text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+
+        @media (prefers-color-scheme: dark) {
+          color: $dark-text-secondary;
+        }
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      &.active {
+        .stat-value {
+          color: $color-active;
+        }
+      }
+
+      &.suspended {
+        .stat-value {
+          color: $color-suspended;
+        }
+      }
+    }
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  .search-box {
+    flex: 1;
+    position: relative;
+
+    .search-input {
+      width: 70%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 1px solid $light-border;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: $light-bg-secondary;
+      color: $light-text;
+      transition: all 0.3s ease;
+
+      @media (prefers-color-scheme: dark) {
+        background: $dark-bg-secondary;
+        border-color: $dark-border;
+        color: $dark-text;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: $color-search;
+        box-shadow: 0 0 0 3px rgba($color-search, 0.1);
+      }
+
+      &::placeholder {
+        color: $light-text-secondary;
+
+        @media (prefers-color-scheme: dark) {
+          color: $dark-text-secondary;
+        }
+      }
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+    }
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1rem;
+      border: 1px solid $light-border;
+      background: $light-bg-secondary;
+      color: $light-text-secondary;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+
+      @media (prefers-color-scheme: dark) {
+        background: $dark-bg-secondary;
+        border-color: $dark-border;
+        color: $dark-text-secondary;
+      }
+
+      &:hover {
+        border-color: $color-highlight;
+        color: $color-highlight;
+      }
+
+      &.active {
+        border-color: $color-highlight;
+        background: rgba($color-highlight, 0.1);
+        color: $color-highlight;
+      }
+
+      &.active-btn.active {
+        border-color: $color-active;
+        background: rgba($color-active, 0.1);
+        color: $color-active;
+      }
+
+      &.suspended-btn.active {
+        border-color: $color-suspended;
+        background: rgba($color-suspended, 0.1);
+        color: $color-suspended;
+      }
+    }
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: $color-highlight;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  overflow: scroll;
+  gap: 1rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $light-text-secondary;
+    margin: 0;
+
+    @media (prefers-color-scheme: dark) {
+      color: $dark-text-secondary;
+    }
+  }
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: $light-bg-secondary;
+  border: 1px solid $light-border;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-bg-secondary;
+    border-color: $dark-border;
+  }
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    @media (prefers-color-scheme: dark) {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid $color-highlight;
+    }
+
+    .user-details {
+      min-width: 0;
+
+      .user-name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .user-username {
+        font-size: 0.875rem;
+        color: $light-text-secondary;
+        margin: 0;
+
+        @media (prefers-color-scheme: dark) {
+          color: $dark-text-secondary;
+        }
+      }
+    }
+  }
+
+  .user-status {
+    .status-badge {
+      display: inline-block;
+      padding: 0.5rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+
+      &.active {
+        background: rgba($color-active, 0.1);
+        color: $color-active;
+      }
+
+      &.suspended {
+        background: rgba($color-suspended, 0.1);
+        color: $color-suspended;
+      }
+    }
+  }
+
+  .user-actions {
+    .toggle-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      &.suspend-btn {
+        background: rgba($color-suspended, 0.1);
+        color: $color-suspended;
+
+        &:hover {
+          background: $color-suspended;
+          color: white;
+        }
+      }
+
+      &.activate-btn {
+        background: rgba($color-active, 0.1);
+        color: $color-active;
+
+        &:hover {
+          background: $color-active;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+.results-info {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: $light-text-secondary;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-text-secondary;
+  }
+}

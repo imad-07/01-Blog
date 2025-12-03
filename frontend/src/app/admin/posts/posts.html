@@ -1,0 +1,98 @@
+<div class="posts-board">
+  <div class="container">
+    <!-- Posts Section -->
+    <div class="section">
+      <div class="section-header">
+        <h2>📝 Blog Posts</h2>
+      </div>
+      <div class="section-content" (scroll)="Postinfinitescroll($event)">
+        <table class="posts-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Content Preview</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let post of posts()">
+              <td>{{ post.id }}</td>
+              <td>{{ post.title }}</td>
+              <td class="flex items-center gap-2">
+                <img [src]="getAvatarUrl(post.author.avatar)" [alt]="post.author.username" />
+                <div>
+                  <div class="font-medium">{{ post.author.username }}</div>
+                </div>
+              </td>
+              <td>
+                <p>{{ post.content}}</p>
+              </td>
+              <td>
+                <span [ngClass]="post.status() ? 'status-active' : 'status-suspended'">
+                  {{ post.status() ? 'Active' : 'Suspended' }}
+                </span>
+              </td>
+              <td class="actions">
+                <button class="btn-edit" (click)="onEdit(post.id)">Edit</button>
+                <button class="btn-delete" (click)="onDelete(post.id)">Delete</button>
+                <button [ngClass]="post.status() ? 'btn-suspend' : 'btn-activate'" (click)="onToggleStatus(post)">
+                  {{ post.status() ? 'Suspend' : 'Activate' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+    </div>
+
+    <!-- Reports Section -->
+    <div class="section">
+      <div class="section-header">
+        <h2>⚠️ Post Reports</h2>
+      </div>
+      <div class="section-content"(scroll)="Reportinfinitescroll($event)">
+        <table class="reports-table">
+          <thead>
+            <tr>
+              <th>Post</th>
+              <th>Reported By</th>
+              <th>Reason</th>
+              <th>State</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let report of reports()">
+              <td>{{ report.post.title }}</td>
+              <td>@{{ report.author.username }}</td>
+              <td>{{ report.reason }}</td>
+              <td>
+                <span class="state" [class.handled]="report.state()" [class.pending]="!report.state()">
+                  {{ report.state() ? 'Handled' : 'Pending' }}
+                </span>
+              </td>
+              <td class="actions">
+                <ng-container *ngIf="!report.state(); else alreadyMarked">
+                  <button class="btn-action" (click)="OnToggleReport(report)">
+                    Mark As Handled
+                  </button>
+                </ng-container>
+
+                <ng-template #alreadyMarked>
+                  <span class="already-marked">Already Marked!</span>
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

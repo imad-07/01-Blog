@@ -1,0 +1,54 @@
+.news-section {
+  padding: 2rem;
+  overflow-y: scroll;
+  height: 90vh;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .no-posts {
+    text-align: center;
+    margin-top: 3rem;
+    color: #888;
+    font-size: 1.1rem;
+    animation: fadeIn 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+      color: #bbb;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #121212;
+
+    h2 {
+      color: #eee;
+    }
+  }
+}

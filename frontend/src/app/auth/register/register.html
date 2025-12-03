@@ -1,0 +1,33 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <a routerLink="/" class="logo">MyApp</a>
+
+    <h2>Create Account</h2>
+    <p class="subtitle">Sign up to get started!</p>
+
+    <form (ngSubmit)="onSubmit()">
+      <label>Select an Avatar</label>
+      <div class="avatar-scroll">
+        <div class="avatar-item" 
+             *ngFor="let avatar of avatars; let i = index"
+  [id]="'avatar-' + i"
+  [class.selected]="avatar === selectedAvatar"
+  (click)="selectAvatar(avatar, i)">
+          <img [src]="avatar" alt="avatar" />
+        </div>
+      </div>
+
+      <label>Username</label>
+      <input [(ngModel)]="username" name="username" required>
+
+      <label>Password</label>
+      <input [(ngModel)]="password" name="password" type="password" required>
+
+      <button type="submit" class="btn-primary">Register</button>
+    </form>
+
+    <p class="switch-auth">
+      Already have an account? <a routerLink="/login">Sign In</a>
+    </p>
+  </div>
+</div>
