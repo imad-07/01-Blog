@@ -381,37 +381,195 @@ $color-search: #3b82f6;
   }
 
   .user-actions {
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+    align-items: center;
+
     .toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 0.5rem 1rem;
-      border: none;
+      border: 2px solid;
+      background: transparent;
       border-radius: 6px;
       font-weight: 600;
       font-size: 0.875rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: -1;
+      }
+
+      .btn-icon {
+        font-size: 1rem;
+        transition: transform 0.3s ease;
+      }
+
+      .btn-text {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
 
       &:hover {
         transform: translateY(-2px);
-      }
 
-      &.suspend-btn {
-        background: rgba($color-suspended, 0.1);
-        color: $color-suspended;
-
-        &:hover {
-          background: $color-suspended;
-          color: white;
+        .btn-icon {
+          transform: scale(1.2) rotate(15deg);
         }
       }
 
-      &.activate-btn {
-        background: rgba($color-active, 0.1);
-        color: $color-active;
+      &:active {
+        transform: translateY(0);
+      }
+
+      // Suspend Button (Red/Orange)
+      &.suspend-btn {
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+
+        &::before {
+          background: #ff6b6b;
+        }
 
         &:hover {
-          background: $color-active;
           color: white;
+          border-color: #ff4444;
+          box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+
+          &::before {
+            left: 0;
+          }
+        }
+      }
+
+      // Activate Button (Green)
+      &.activate-btn {
+        border-color: #51cf66;
+        color: #51cf66;
+
+        &::before {
+          background: #51cf66;
+        }
+
+        &:hover {
+          color: white;
+          border-color: #37b24d;
+          box-shadow: 0 4px 16px rgba(81, 207, 102, 0.3);
+
+          &::before {
+            left: 0;
+          }
+        }
+      }
+    }
+
+    // Delete Button
+    .delete-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.5rem 1rem;
+      border: 2px solid #ff3b6f;
+      background: transparent;
+      color: #ff3b6f;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: #ff3b6f;
+        transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: -1;
+      }
+
+      .delete-icon {
+        font-size: 1rem;
+        transition: transform 0.3s ease;
+      }
+
+      .delete-text {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      &:hover {
+        color: white;
+        border-color: #ff1b5a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(255, 59, 111, 0.3);
+
+        &::before {
+          left: 0;
+        }
+
+        .delete-icon {
+          transform: scale(1.2) rotate(15deg);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    // Dark Mode Support
+    @media (prefers-color-scheme: dark) {
+      .toggle-btn {
+        &.suspend-btn {
+          border-color: #ff6b6b;
+          color: #ff6b6b;
+
+          &:hover {
+            color: white;
+            border-color: #ff4444;
+            box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
+          }
+        }
+
+        &.activate-btn {
+          border-color: #51cf66;
+          color: #51cf66;
+
+          &:hover {
+            color: white;
+            border-color: #37b24d;
+            box-shadow: 0 4px 16px rgba(81, 207, 102, 0.4);
+          }
+        }
+      }
+
+      .delete-btn {
+        border-color: #ff3b6f;
+        color: #ff3b6f;
+
+        &:hover {
+          color: white;
+          border-color: #ff1b5a;
+          box-shadow: 0 4px 16px rgba(255, 59, 111, 0.4);
         }
       }
     }

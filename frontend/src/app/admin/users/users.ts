@@ -32,15 +32,6 @@ export class UsersComponent {
       filtered = filtered.filter(u => u.status === statusValue);
     }
 
-    // Filter by search query
-    const query = this.searchQuery().trim().toLowerCase();
-    if (query) {
-      filtered = filtered.filter(u =>
-        u.username.toLowerCase().includes(query) ||
-        (u.username && u.username.toLowerCase().includes(query))
-      );
-    }
-
     return filtered;
   });
   getAvatarUrl(avatar: string) {
@@ -75,5 +66,9 @@ export class UsersComponent {
       this.lastUserid = users.length > 0 ? users[users.length - 1].id : 1;
       this.loadingusers = false;
     }
+  }
+  async deleteUser(user: Author) {
+    let rsp = await this.psr.Deleteuser(user.id)
+    console.log(rsp);
   }
 }

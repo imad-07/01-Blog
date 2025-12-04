@@ -1,0 +1,371 @@
+// Main Container
+.users-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    transition: background-color 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #0a0a0a;
+    }
+}
+
+// Header Styles
+.users-header {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eff3f4;
+    transition: all 0.3s ease;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #0f0f0f;
+        border-bottom-color: #1a1a1a;
+    }
+
+    .header-content {
+        margin-bottom: 1.5rem;
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f1419;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+
+            @media (prefers-color-scheme: dark) {
+                color: #ffffff;
+            }
+        }
+
+        .header-subtitle {
+            font-size: 0.938rem;
+            color: #536471;
+            margin: 0;
+            font-weight: 400;
+
+            @media (prefers-color-scheme: dark) {
+                color: #8899a6;
+            }
+        }
+    }
+}
+
+// Users List Container
+.users-list {
+    flex: 1;
+    overflow-y: auto;
+    height: 70vh;
+    padding: 1.5rem;
+    background-color: #ffffff;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #0a0a0a;
+    }
+
+    // Custom Scrollbar
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #eff3f4;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #2a2a2a;
+        }
+
+        &:hover {
+            background-color: #8899a6;
+
+            @media (prefers-color-scheme: dark) {
+                background-color: #404040;
+            }
+        }
+    }
+}
+
+// Cards Grid
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+// User Card
+.user-card {
+    background-color: #ffffff;
+    border: 2px solid #eff3f4;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #0f0f0f;
+        border-color: #1a1a1a;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    &:hover {
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        border-color: #1d9bf0;
+        transform: translateY(-6px);
+
+        @media (prefers-color-scheme: dark) {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+        }
+    }
+}
+
+// Avatar Section
+.card-avatar-section {
+    position: relative;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0f2f5 0%, #f8f9fa 100%);
+    overflow: hidden;
+
+    @media (prefers-color-scheme: dark) {
+        background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    }
+
+    .user-avatar {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid #ffffff;
+        transition: transform 0.3s ease;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+        @media (prefers-color-scheme: dark) {
+            border-color: #151515;
+        }
+
+        .user-card:hover & {
+            transform: scale(1.08);
+        }
+    }
+
+    .avatar-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, #ffffff 100%);
+        opacity: 0.25;
+        pointer-events: none;
+
+        @media (prefers-color-scheme: dark) {
+            background: linear-gradient(180deg, transparent 0%, #0a0a0a 100%);
+        }
+    }
+}
+
+// Card Content
+.card-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+
+// User Info Section
+.user-info-section {
+    .user-name {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #0f1419;
+        margin: 0 0 0.35rem 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.3s ease;
+
+        @media (prefers-color-scheme: dark) {
+            color: #ffffff;
+        }
+    }
+
+    .user-handle {
+        font-size: 0.875rem;
+        color: #536471;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 500;
+
+        @media (prefers-color-scheme: dark) {
+            color: #8899a6;
+        }
+    }
+}
+
+// Follow Button
+.follow-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 1.5rem;
+    font-weight: 700;
+    font-size: 0.975rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    background-color: #1d9bf0;
+    color: white;
+    box-shadow: 0 4px 12px rgba(29, 155, 240, 0.2);
+
+    .button-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .button-text {
+        display: none;
+
+        @media (min-width: 768px) {
+            display: inline;
+        }
+    }
+
+    &:hover:not(.followed) {
+        background-color: #1a8cd8;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
+    }
+
+    &.followed {
+        background-color: #f91880;
+        color: white;
+        box-shadow: 0 4px 12px rgba(249, 24, 128, 0.2);
+
+        &:hover {
+            background-color: #d31a6b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 24, 128, 0.4);
+        }
+    }
+
+    &:active {
+        transform: translateY(-1px);
+    }
+}
+
+// Empty State
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+
+    .empty-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f1419;
+        margin: 0 0 0.5rem 0;
+
+        @media (prefers-color-scheme: dark) {
+            color: #ffffff;
+        }
+    }
+
+    .empty-text {
+        font-size: 0.938rem;
+        color: #536471;
+        margin: 0;
+
+        @media (prefers-color-scheme: dark) {
+            color: #8899a6;
+        }
+    }
+}
+
+// Loading States
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+
+    .loading-text {
+        font-size: 0.938rem;
+        color: #536471;
+
+        @media (prefers-color-scheme: dark) {
+            color: #8899a6;
+        }
+    }
+}
+
+.loading-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    gap: 1rem;
+    color: #536471;
+    font-size: 0.938rem;
+
+    @media (prefers-color-scheme: dark) {
+        color: #8899a6;
+    }
+}
+
+// Spinner Animation
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #eff3f4;
+    border-top-color: #1d9bf0;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+
+    @media (prefers-color-scheme: dark) {
+        border-color: #2a2a2a;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -107,7 +107,7 @@
         <div class="author-info">
           <div>
             <h3>Top Author</h3>
-            <div class="author-name">{{ dashboard.star.name || dashboard.star.username }}</div>
+            <div class="author-name">{{dashboard.star.username }}</div>
             <div class="author-username">@{{ dashboard.star.username }}</div>
           </div>
           <img [src]="getAvatarUrl(dashboard.star.avatar)" [alt]="dashboard.star.username" class="author-avatar">
@@ -140,7 +140,7 @@
         <div class="user-item" *ngFor="let user of dashboard.latestusers">
           <img [src]="getAvatarUrl(user.avatar)" [alt]="user.username" class="user-avatar">
           <div class="user-details">
-            <div class="user-name">{{ user.name || user.username }}</div>
+            <div class="user-name">{{user.username }}</div>
             <div class="user-email">@{{ user.username }}</div>
           </div>
         </div>

@@ -1,0 +1,76 @@
+import { Component, computed, OnInit, signal, WritableSignal, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Author } from '../shared/models';
+import { PostService } from '../posts/authpost';
+
+@Component({
+  selector: 'app-users-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './userslist.html',
+  styleUrls: ['./userslist.scss'],
+})
+export class UserslistComponent implements OnInit {
+  @ViewChild('usersList', { static: false }) usersListElement!: ElementRef<HTMLElement>;
+
+  constructor(private psr: PostService) { }
+
+  lastUserid = 0;
+  loadingusers = signal(false);
+  followedUsers = new Set<number>();
+  users: WritableSignal<Author[]> = signal([]);
+  private previousScrollHeight = 0;
+
+  async ngOnInit() {
+    this.loadingusers.set(true);
+    const users = await this.psr.getUsersList(this.lastUserid);
+    console.log(users);
+    this.users.update(p => [...p, ...users]);
+    this.lastUserid = users.length > 0 ? users[users.length - 1].id : 1;
+    this.loadingusers.set(false);
+  }
+
+  toggleFollow(userId: number) {
+    if (this.followedUsers.has(userId)) {
+      this.followedUsers.delete(userId);
+    } else {
+      this.followedUsers.add(userId);
+    }
+  }
+
+
+  getAvatarUrl(avatar: string): string {
+    return `http://localhost:8080/avatars/${avatar}`;
+  }
+
+  async onUserInfiniteScroll(ev: any) {
+    if (this.loadingusers()) return;
+
+    const e = ev.target as HTMLElement;
+
+    if (e.scrollHeight - e.scrollTop <= e.clientHeight + 20) {
+      this.loadingusers.set(true);
+
+      // Store the scroll height before loading
+      this.previousScrollHeight = e.scrollHeight;
+
+      this.lastUserid = this.users().length > 0 ? this.users()[this.users().length - 1].id : 1;
+      const users = await this.psr.getUsersList(this.lastUserid);
+
+      if (users.length > 0) {
+        this.users.update(p => [...p, ...users]);
+        this.lastUserid = users[users.length - 1].id;
+
+        // Maintain scroll position by calculating the new height difference
+        setTimeout(() => {
+          const newScrollHeight = e.scrollHeight;
+          const heightDifference = newScrollHeight - this.previousScrollHeight;
+          e.scrollTop += heightDifference;
+        }, 0);
+      }
+
+      this.loadingusers.set(false);
+    }
+  }
+}

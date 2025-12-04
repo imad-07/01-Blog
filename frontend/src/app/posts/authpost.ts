@@ -12,7 +12,7 @@ import {
 export class PostService {
   private apiUrl = 'http://localhost:8080/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   private async safe<T>(promise: Promise<T>, fallback: T): Promise<T> {
     try {
       return await promise;
@@ -309,6 +309,17 @@ export class PostService {
   async SeenAllNotif(): Promise<boolean> {
     return this.safe(
       firstValueFrom(this.http.patch<boolean>(`${this.apiUrl}notif/seen-all`, {})),
+      false
+    );
+  }
+  async getUsersList(id: number): Promise<Author[]> {
+    return this.safe(
+      firstValueFrom(this.http.get<Author[]>(`${this.apiUrl}user/${id}`)),
+      [])
+  }
+    async Deleteuser(id: number): Promise<boolean> {
+    return this.safe(
+      firstValueFrom(this.http.delete<boolean>(`${this.apiUrl}admin/rm-user/${id}`)),
       false
     );
   }

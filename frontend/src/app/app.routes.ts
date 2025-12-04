@@ -15,6 +15,7 @@ import { Home } from './shared/home/home';
 import { Editguard } from './editguard';
 import { ProfileComponent } from './profile/profile';
 import { Admin } from './admin/admin';
+import { UserslistComponent } from './userslist/userslist';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -25,7 +26,8 @@ export const routes: Routes = [
             { path: 'newpost', component: Newpost, canActivate: [AuthGuard] },
             { path: 'feed', component: PostListComponent, canActivate: [AuthGuard] },
             { path: 'post/edit/:id', component: EditPost, canActivate: [AuthGuard, Editguard] },
-            { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
+            { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthGuard] },
+            { path: 'users', component: UserslistComponent, canActivate: [AuthGuard] },
             { path: '**', redirectTo: 'feed' }
         ]
     }

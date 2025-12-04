@@ -4,7 +4,7 @@ import { PostsComponent } from "./posts/posts";
 import { UsersComponent } from "./users/users";
 import { CommonModule } from '@angular/common';
 import { PostService } from '../posts/authpost';
-import { AdminPost, AdminResponse, Author, Report } from '../shared/models';
+import { AdminPost, AdminResponse, Author, Dashboard, Report } from '../shared/models';
 import { ProfileComponent } from "../profile/profile";
 import { RouterLink } from "@angular/router";
 
@@ -12,10 +12,9 @@ import { RouterLink } from "@angular/router";
   selector: 'app-admin',
   templateUrl: './admin.html',
   styleUrls: ['./admin.scss'],
-  imports: [DashboardComponent, PostsComponent, CommonModule, UsersComponent, ProfileComponent, RouterLink]
+  imports: [DashboardComponent, PostsComponent, CommonModule, UsersComponent, RouterLink]
 })
 export class Admin implements OnInit {
-  darkMode = false;
   admin: AdminResponse = {
     reports: [],
     posts: [],
@@ -39,19 +38,14 @@ export class Admin implements OnInit {
   Posts = signal<AdminPost[]>([]);
   Reports = signal<Report[]>([]);
   Users = signal<Author[]>([]);
-  currentView: 'dashboard' | 'posts' | 'users' | 'admin'= 'admin';
+  Dashboard = signal<Dashboard>({} as Dashboard);
+  currentView: 'dashboard' | 'posts' | 'users'= 'dashboard';
   constructor(private psr: PostService) { }
   async ngOnInit() {
     this.admin = await this.psr.GetAdmin()
     this.Posts.set(this.admin.posts)
     this.Reports.set(this.admin.reports)
     this.Users.set(this.admin.users)
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    this.darkMode = prefersDark;
-
-    // Optional: Listen for changes dynamically
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      this.darkMode = e.matches;
-    });
+    this.Dashboard.set(this.admin.dashboard)
   }
 }

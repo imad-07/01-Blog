@@ -1,0 +1,133 @@
+// confirmation-popup.component.scss
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.popup {
+  background-color: #111827; // gray-900
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #1f2937; // gray-800
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: #9ca3af; // gray-400
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  padding: 0.5rem;
+
+  &:hover {
+    color: #e5e7eb; // gray-200
+  }
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.icon {
+  background-color: rgba(239, 68, 68, 0.2); // red-500/20
+  padding: 0.75rem;
+  border-radius: 9999px;
+  color: #ef4444; // red-500
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+}
+
+.message {
+  color: #9ca3af; // gray-400
+  text-align: center;
+  font-size: 0.875rem;
+  margin: 0 0 2rem 0;
+  line-height: 1.5;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn {
+  flex: 1;
+  font-weight: 500;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.btn-delete {
+  background-color: #dc2626; // red-600
+  color: white;
+
+  &:hover {
+    background-color: #b91c1c; // red-700
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-cancel {
+  background-color: #1f2937; // gray-800
+  color: white;
+  border: 1px solid #374151; // gray-700
+
+  &:hover {
+    background-color: #111827; // gray-900
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

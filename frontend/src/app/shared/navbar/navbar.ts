@@ -36,6 +36,9 @@ export class Navbar {
   feed() {
     this.router.navigate(["feed"])
   }
+  explore() {
+    this.router.navigate(["users"])
+  }
   profile() {
     this.author.username == 'admin' ? this.router.navigate(["admin"]) : this.router.navigate(["profile"])
   }

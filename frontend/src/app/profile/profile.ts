@@ -25,6 +25,7 @@ export class ProfileComponent {
   showFollowers = false;
   showFollowing = false;
   isFollowing = signal(false);
+  username = "";
   async toggleFollow() {
     let username = this.profile().user.username;
     const rsp = await this.psr.follow(username);
@@ -33,19 +34,20 @@ export class ProfileComponent {
 
     }
   }
-  constructor(private psr: PostService, private auth:AuthService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private psr: PostService, private auth: AuthService, private route: ActivatedRoute, private router: Router) { }
   async ngOnInit() {
-    let username = (await this.auth.whoami()).username
+    this.route.paramMap.subscribe(async params => {
+      this.username = params.get('username') || '';
+      let profile = await this.psr.fetchProfile(this.username);
+      if (profile.error.length > 0 && profile.error[0] == "InvalidInfo") {
+        this.router.navigate(['feed'])
+      }
 
-    let profile = await this.psr.fetchProfile(username);
-    if (profile.error.length > 0 && profile.error[0] == "InvalidInfo") {
-      this.router.navigate(['feed'])
-    }
-
-    this.isFollowing.set(profile.profile.followed())
-    let lastindex = profile.profile.posts().length - 1;
-    this.lastid = lastindex > 0 ? profile.profile.posts()[lastindex].id : 0;
-    this.profile.set(profile.profile);
+      this.isFollowing.set(profile.profile.followed())
+      let lastindex = profile.profile.posts().length - 1;
+      this.lastid = lastindex > 0 ? profile.profile.posts()[lastindex].id : 0;
+      this.profile.set(profile.profile);
+    });
   }
   toggleFollowers() {
     this.showFollowers = !this.showFollowers;

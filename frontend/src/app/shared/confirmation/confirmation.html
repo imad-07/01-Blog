@@ -1,0 +1,31 @@
+<!-- confirmation-popup.component.html -->
+<div *ngIf="isOpen" class="overlay">
+    <div class="popup">
+        <!-- Close button -->
+        <button class="close-btn" (click)="onCancel()" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+        </button>
+
+        <!-- Icon -->
+        <div class="icon-container">
+            <div class="icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                    <path d="M12 8V12M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <h2 class="title">Are you sure of you action?</h2>
+        <p class="message">{{ message }}</p>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <button class="btn btn-delete" (click)="onConfirm()">Confirm</button>
+            <button class="btn btn-cancel" (click)="onCancel()">Abort</button>
+        </div>
+    </div>
+</div>

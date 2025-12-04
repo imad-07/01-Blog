@@ -24,34 +24,17 @@
 
   <!-- Search and Filter -->
   <div class="controls">
-    <div class="search-box">
-      <input 
-        type="text" 
-        placeholder="Search by username or name..." 
-        [value]="searchQuery()"
-        (input)="onSearchChange($event.target.value)"
-        class="search-input">
-      <span class="search-icon">🔍</span>
-    </div>
-
     <div class="filter-buttons">
-      <button 
-        [class.active]="filterStatus() === 'all'"
-        (click)="onFilterChange('all')"
-        class="filter-btn">
+      <button [class.active]="filterStatus() === 'all'" (click)="onFilterChange('all')" class="filter-btn">
         All
       </button>
 
-      <button 
-        [class.active]="filterStatus() === 'active'"
-        (click)="onFilterChange('active')"
+      <button [class.active]="filterStatus() === 'active'" (click)="onFilterChange('active')"
         class="filter-btn active-btn">
         Active
       </button>
 
-      <button 
-        [class.active]="filterStatus() === 'suspended'"
-        (click)="onFilterChange('suspended')"
+      <button [class.active]="filterStatus() === 'suspended'" (click)="onFilterChange('suspended')"
         class="filter-btn suspended-btn">
         Suspended
       </button>
@@ -73,10 +56,7 @@
 
     <div *ngFor="let user of filteredUsers()" class="user-card">
       <div class="user-info">
-        <img 
-          [src]="getAvatarUrl(user.avatar)" 
-          [alt]="user.username" 
-          class="user-avatar">
+        <img [src]="getAvatarUrl(user.avatar)" [alt]="user.username" class="user-avatar">
         <div class="user-details">
           <h3 class="user-name">{{ user.username }}</h3>
           <p class="user-username">@{{ user.username }}</p>
@@ -90,10 +70,15 @@
       </div>
 
       <div class="user-actions">
-        <button 
-          [class]="'toggle-btn ' + (user.status ? 'suspend-btn' : 'activate-btn')"
-          (click)="toggleUserStatus(user)">
-          {{ user.status ? '🚫 Suspend' : '✅ Activate' }}
+        <button [class]="'toggle-btn ' + (user.status ? 'suspend-btn' : 'activate-btn')"
+          (click)="toggleUserStatus(user)" [title]="user.status ? 'Suspend user' : 'Activate user'">
+          <span class="btn-icon">{{ user.status ? '🚫' : '✅' }}</span>
+          <span class="btn-text">{{ user.status ? 'Suspend' : 'Activate' }}</span>
+        </button>
+
+        <button class="delete-btn" (click)="deleteUser(user)" title="Delete user permanently">
+          <span class="delete-icon">🗑️</span>
+          <span class="delete-text">Delete</span>
         </button>
       </div>
     </div>

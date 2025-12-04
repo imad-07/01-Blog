@@ -22,8 +22,6 @@ export class PostsComponent implements OnInit {
   darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   getAvatarUrl = getAvatarUrl;
   constructor(private router: Router, private psr: PostService) {
-    console.log(this.posts().length);
-
   }
 
   ngOnInit(): void {
@@ -44,6 +42,7 @@ export class PostsComponent implements OnInit {
   async onToggleStatus(post: AdminPost) {
     const rsp = await this.psr.UpdatePostStatus(post.id);
     post.status.set(rsp ? !post.status() : post.status())
+
   }
   async OnToggleReport(report: Report) {
     const rsp = await this.psr.UpdateReportStatus(report.id);
