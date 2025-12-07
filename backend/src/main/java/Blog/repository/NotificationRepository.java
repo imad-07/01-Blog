@@ -34,4 +34,15 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Transactional
     @Query("UPDATE Notification n SET n.seen = true WHERE n.reciever.username = :reciever")
     int updateseenByUserId(@Param("reciever") String recieverId);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+        INSERT INTO notifs (senderid, recieverid, content, created_at, seen)
+        SELECT :senderId, f.followerid, :content, NOW(), false
+        FROM follows f
+        WHERE f.followedid = :senderId
+        """, nativeQuery = true)
+    void notifyFollowers(long senderId, String content);
 }

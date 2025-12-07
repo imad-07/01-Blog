@@ -40,6 +40,6 @@ export class Navbar {
     this.router.navigate(["users"])
   }
   profile() {
-    this.author.username == 'admin' ? this.router.navigate(["admin"]) : this.router.navigate(["profile"])
+    this.author.username == 'admin' ? this.router.navigate(["admin"]) : this.router.navigate(["/profile/" + this.author.username])
   }
 }

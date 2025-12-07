@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Author } from '../../shared/models';
 import { PostService } from '../../posts/authpost';
+import { ConfirmationPopupComponent } from '../../shared/confirmation/confirmation';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';  // ← Add MatDialog import
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatDialogModule],  // ← Add ConfirmationPopupComponent
   templateUrl: './users.html',
   styleUrls: ['./users.scss']
 })
@@ -17,23 +19,28 @@ export class UsersComponent {
   @Input() totalusers: number = 0;
   @Input() totalactiveusers: number = 0;
   @Input() totalsuspendedusers: number = 0;
+
   searchQuery = signal('');
   filterStatus = signal<'all' | 'active' | 'suspended'>('all');
   loading = signal(false);
   loadingusers = false;
   lastUserid = this.users().length > 0 ? this.users()[this.users().length - 1].id : 1;
-  constructor(private psr: PostService) { }
+
+  constructor(
+    private psr: PostService,
+    private dialog: MatDialog  // ← Add this
+  ) { }
+
   filteredUsers = computed(() => {
     let filtered = this.users();
-
     // Filter by status
     if (this.filterStatus() !== 'all') {
       const statusValue = this.filterStatus() === 'active';
       filtered = filtered.filter(u => u.status === statusValue);
     }
-
     return filtered;
   });
+
   getAvatarUrl(avatar: string) {
     return `http://localhost:8080/avatars/${avatar}`;
   }
@@ -47,14 +54,16 @@ export class UsersComponent {
         )
       );
     }
-
   }
+
   onSearchChange(query: string) {
     this.searchQuery.set(query);
   }
+
   onFilterChange(status: 'all' | 'active' | 'suspended') {
     this.filterStatus.set(status);
   }
+
   async Userinfinitescroll(ev: Event) {
     if (this.loadingusers) return;
     const e = ev.target as HTMLElement;
@@ -67,8 +76,15 @@ export class UsersComponent {
       this.loadingusers = false;
     }
   }
+
   async deleteUser(user: Author) {
-    let rsp = await this.psr.Deleteuser(user.id)
+    // User confirmed, proceed with deletion
+    const rsp = await this.psr.Deleteuser(user.id);
     console.log(rsp);
+
+    // Remove user from list
+    this.users.update(users =>
+      users.filter(u => u.id !== user.id)
+    );
   }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import Blog.model.Author;
 import Blog.model.Follow;
+import Blog.model.NotificationType;
 import Blog.model.User;
 import Blog.repository.FollowRepository;
 
@@ -15,10 +16,12 @@ import Blog.repository.FollowRepository;
 public class FollowService {
     private FollowRepository followRepository;
     private UserService userService;
+    private NotificationService notifservice;
 
-    FollowService(FollowRepository followRepository, UserService userService) {
+    FollowService(FollowRepository followRepository, UserService userService, NotificationService notifservice) {
         this.followRepository = followRepository;
         this.userService = userService;
+        this.notifservice = notifservice;
     }
 
     public List<Author> getFollowers(User user, long startId) {
@@ -70,6 +73,7 @@ public class FollowService {
             f.setFollower(follower);
             f.setFollowed(followed);
             followRepository.save(f);
+            notifservice.save(follower, followed, NotificationType.FOLLOW);
         }
         return true;
     }

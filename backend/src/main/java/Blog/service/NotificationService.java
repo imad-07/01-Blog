@@ -39,7 +39,7 @@ public class NotificationService {
         for (Notification notification : notifs) {
             NotificationResponse noresp = new NotificationResponse();
             User us = notification.getSender();
-            Author u = new Author(us.getId(),us.getAvatar(), us.getUsername(),
+            Author u = new Author(us.getId(), us.getAvatar(), us.getUsername(),
                     us.isStatus());
             noresp.setSender(u);
             noresp.setContent(notification.getContent());
@@ -89,5 +89,9 @@ public class NotificationService {
             return false;
         }
 
+    }
+
+    public void notifysubscribers(long userid, NotificationType ntype) {
+        this.notificationRepository.notifyFollowers(userid, ntype.getDescription());
     }
 }

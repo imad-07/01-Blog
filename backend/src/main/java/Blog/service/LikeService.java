@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import Blog.model.Errors;
 import Blog.model.Like;
+import Blog.model.NotificationType;
 import Blog.model.Post;
 import Blog.model.PostResponse;
 import Blog.model.User;
@@ -15,11 +16,13 @@ public class LikeService {
     private final UserService userService;
     private final PostService postService;
     private final LikeRepository likeRepository;
+    private NotificationService notifservice;
 
-    public LikeService(UserService userService, PostService postService, LikeRepository likeRepository) {
+    public LikeService(UserService userService, PostService postService, LikeRepository likeRepository, NotificationService notifservice) {
         this.userService = userService;
         this.postService = postService;
         this.likeRepository = likeRepository;
+        this.notifservice = notifservice;
     }
 
     public Integer CountPost(long postid) {
@@ -42,6 +45,7 @@ public class LikeService {
         }
         Like like = new Like(user, post);
         this.likeRepository.save(like);
+        notifservice.save(user, post.getAuthor(), NotificationType.LIKE);
         return Errors.Like_Error.Success;
     }
 
@@ -53,4 +57,3 @@ public class LikeService {
         return pr;
     }
 }
- 

@@ -21,6 +21,7 @@ import Blog.helpers.validators;
 import Blog.model.Author;
 import Blog.model.Epost;
 import Blog.model.Errors;
+import Blog.model.NotificationType;
 import Blog.model.Post;
 import Blog.model.PostResponse;
 import Blog.model.PostResponse.Media;
@@ -34,17 +35,19 @@ public class PostService {
     public final LikeRepository likerepository;
     public final CommentService commentService;
     private final UserService uservice;
+    private NotificationService notifservice;
     private static final long MAX_FILE_SIZE = 20 * 1024 * 1024;
 
     private final String myDir = "src/main/java/Blog/files/posts/";
 
     @Autowired
     public PostService(PostRepository PostRepository, UserService uservice, LikeRepository likerepository,
-            CommentService commentService) {
+            CommentService commentService, NotificationService notifservice) {
         this.postrepository = PostRepository;
         this.likerepository = likerepository;
         this.commentService = commentService;
         this.uservice = uservice;
+        this.notifservice = notifservice;
     }
 
     public Errors.Post_Error AddPost(UserDetails user, Post post, MultipartFile file) {
@@ -70,6 +73,7 @@ public class PostService {
         post.setAuthor(uservice.getUserByUsername(user.getUsername()).orElse(null));
         post.setStatus(true);
         postrepository.save(post);
+        this.notifservice.notifysubscribers(post.getAuthor().getId(), NotificationType.POST);
         return Errors.Post_Error.Success;
     }
 
@@ -88,7 +92,7 @@ public class PostService {
         if (user == null) {
             return new ArrayList<>();
         }
-        List<Post> posts = postrepository.findFeedPage(user.getId(),start);
+        List<Post> posts = postrepository.findFeedPage(user.getId(), start);
 
         List<PostResponse> respons = toPostResponseList(posts, user.getId());
         return respons;
