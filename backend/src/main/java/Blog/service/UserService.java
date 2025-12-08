@@ -34,7 +34,7 @@ public class UserService {
 
     // Register a new user
     public Errors.Register_Error registerUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername()) || !validators.ValidatePassword(user.getUsername())) {
             return Errors.Register_Error.UsernameError;
         }
         if (!validators.ValidatePassword(user.getPassword())) {

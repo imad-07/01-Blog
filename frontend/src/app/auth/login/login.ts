@@ -23,9 +23,6 @@ username = '';
         localStorage.setItem("JWT", res.jwt)
         this.router.navigate(['/']);
       },
-      error: (err) => {
-        alert('Login failed');
-      }
     });
   }
 }

@@ -24,7 +24,10 @@ public class ReportController {
     @PostMapping("/{id}")
     public ResponseEntity<Errors.ReportError> Report(@AuthenticationPrincipal UserDetails user, @RequestParam String reason, @PathVariable("id") long id) {  
         Errors.ReportError Reporterror  = reportservice.Report(user, id, reason);
-        return ResponseEntity.status(HttpStatus.OK).body(Reporterror);
+        if (Reporterror == Errors.ReportError.Success){
+            return ResponseEntity.status(HttpStatus.OK).body(Reporterror);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Reporterror);
     }
 
 }

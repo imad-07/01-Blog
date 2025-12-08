@@ -41,34 +41,16 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, authEx) -> {
-                            System.out.println("========== AUTHENTICATION FAILED ==========");
-                            System.out.println("Request: " + req.getMethod() + " " + req.getRequestURI());
-                            System.out.println("Remote Address: " + req.getRemoteAddr());
-                            System.out.println("Error: " + authEx.getMessage());
-                            System.out.println("Exception Type: " + authEx.getClass().getName());
-                            System.out.println("Authorization Header: " + req.getHeader("Authorization"));
-                            System.out.println("===========================================");
-                            System.out.println(req.getRequestURL());
                             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            res.setContentType("application/json");
-                            res.getWriter().write("false");
+                            res.getWriter().write("Invalid Credentials");
                         })
                         .accessDeniedHandler((req, res, accessEx) -> {
-                            System.out.println("========== ACCESS DENIED ==========");
-                            System.out.println("Request: " + req.getMethod() + " " + req.getRequestURI());
-                            System.out.println(
-                                    "User: " + (req.getUserPrincipal() != null ? req.getUserPrincipal().getName()
-                                            : "anonymous"));
-                            System.out.println("Reason: " + accessEx.getMessage());
-                            System.out.println("====================================");
-
                             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             res.setContentType("application/json");
                             res.getWriter().write("false");
                         }));
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-       // http.addFilterAfter(banFilter, JwtAuthFilter.class);
         return http.build();
     }
 

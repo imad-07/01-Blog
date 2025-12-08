@@ -19,6 +19,7 @@
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/BanFilter.java
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/JwtAuthFilter.java
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/JwtUtil.java
+/home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/RateLimit.java
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/SecurityConfig.java
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/UserServiceDtls.java
 /home/imad-07/01-Blog/backend/src/main/java/Blog/helpers/validators.java

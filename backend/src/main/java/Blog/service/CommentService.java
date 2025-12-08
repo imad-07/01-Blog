@@ -79,7 +79,7 @@ public class CommentService {
             if (u == null) {
                 return new ArrayList<>();
             }
-            Author a = new Author(u.getId(),u.getAvatar(), u.getUsername(), u.isStatus());
+            Author a = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
             r.setAuthor(a);
             rslt.add(r);
         }
@@ -87,7 +87,12 @@ public class CommentService {
     }
 
     public String DeleteComment(UserDetails user, long id) {
-        Comment c = commentrepository.getReferenceById(id);
+        Comment c = new Comment();
+        try {
+            c = commentrepository.getReferenceById(id);
+        } catch (Exception e) {
+            return "invalid comment";
+        }
         User u = userService.getUserByUsername(user.getUsername()).orElse(null);
         if (u == null) {
             return "invalid user";

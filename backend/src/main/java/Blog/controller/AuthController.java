@@ -28,27 +28,27 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> Registeruser(@RequestBody User user) {
+    public ResponseEntity<String> Registeruser(@RequestBody User user) {
         Errors.Register_Error Err = userService.registerUser(user);
         switch (Err) {
             case Errors.Register_Error.RegisterError:
-                UserResponse rsp = new UserResponse("Registration Error");
+                String rsp = "Registration Error";
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp);
             case Errors.Register_Error.UsernameError:
-                UserResponse rsp1 = new UserResponse("Invalid Username");
+                String rsp1 = "Invalid Username";
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp1);
             case Errors.Register_Error.PasswordError:
-                UserResponse rsp2 = new UserResponse("Invalid Password");
+                String rsp2 = "Invalid Password";
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp2);
             default:
-                UserResponse rsp3 = new UserResponse("Registration Succed");
+                String rsp3 = "Registration Succed";
                 return ResponseEntity.status(HttpStatus.CREATED).body(rsp3);
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody User userRequest) {
-         authman.authenticate(
+        authman.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userRequest.getUsername(),
                         userRequest.getPassword()));
