@@ -6,96 +6,67 @@
       <p class="header-subtitle">Find and connect with amazing users</p>
     </div>
 
-  <!-- Users List -->
-  <div
-    #usersList
-    class="users-list"
-    (scroll)="onUserInfiniteScroll($event)"
-  >
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="users().length === 0">
-      <div class="empty-icon">😔</div>
-      <h3 class="empty-title">No users found</h3>
-      <p class="empty-text">Try adjusting your search criteria</p>
-    </div>
+    <!-- Users List -->
+    <div #usersList class="users-list" (scroll)="onUserInfiniteScroll($event)">
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="users().length === 0">
+        <div class="empty-icon">😔</div>
+        <h3 class="empty-title">No users found</h3>
+        <p class="empty-text">Try adjusting your search criteria</p>
+      </div>
 
-    <!-- User Cards Grid -->
-    <div class="cards-grid">
-      <div class="user-card" *ngFor="let user of users();">
-        <!-- Avatar Container -->
-        <div class="card-avatar-section">
-          <img
-            [src]="getAvatarUrl(user.avatar)"
-            [alt]="user.username"
-            class="user-avatar"
-            loading="lazy"
-          />
-          <div class="avatar-overlay"></div>
-        </div>
-
-        <!-- User Info -->
-        <div class="card-content">
-          <div class="user-info-section">
-            <h3 class="user-name">{{ user.username }}</h3>
-            <p class="user-handle">@{{ user.username }}</p>
+      <!-- User Cards Grid -->
+      <div class="cards-grid">
+        <div class="user-card" *ngFor="let user of users();">
+          <!-- Avatar Container -->
+          <div class="card-avatar-section">
+            <img [src]="getAvatarUrl(user.avatar)" [alt]="user.username" class="user-avatar" loading="lazy" />
+            <div class="avatar-overlay"></div>
           </div>
 
-          <!-- Follow Button -->
-          <button
-            class="follow-button"
-            [class.followed]="user.status"
-            (click)="toggleFollow(user.id)"
-            [attr.aria-label]="user.status ? 'Unfollow ' + user.username : 'Follow ' + user.username"
-          >
-            <svg 
-              class="button-icon"
-              *ngIf="!user.status"
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-              <line x1="12" y1="12" x2="12" y2="18"></line>
-              <line x1="9" y1="15" x2="15" y2="15"></line>
-            </svg>
-            <svg 
-              class="button-icon"
-              *ngIf="user.status"
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="currentColor" 
-              stroke="currentColor" 
-              stroke-width="2"
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-            <span class="button-text">
-              {{ user.status ? 'Following' : 'Follow' }}
-            </span>
-          </button>
+          <!-- User Info -->
+          <div class="card-content" >
+            <div class="user-info-section" [routerLink]="['/profile', user.username]">
+              <h3 class="user-name">{{ user.username }}</h3>
+              <p class="user-handle">@{{ user.username }}</p>
+            </div>
+
+            <!-- Follow Button -->
+            <button class="follow-button" [class.followed]="user.status" (click)="toggleFollow(user.username)"
+              [attr.aria-label]="user.status ? 'Unfollow ' + user.username : 'Follow ' + user.username">
+              <svg class="button-icon" *ngIf="!user.status" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+                <line x1="12" y1="12" x2="12" y2="18"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <svg class="button-icon" *ngIf="user.status" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                </path>
+              </svg>
+              <span class="button-text">
+                {{ user.status ? 'Following' : 'Follow' }}
+              </span>
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Loading Indicator at Bottom -->
+      <div class="loading-bottom" *ngIf="loadingusers()">
+        <div class="spinner"></div>
+        <p>Loading more users...</p>
       </div>
     </div>
 
-    <!-- Loading Indicator at Bottom -->
-    <div class="loading-bottom" *ngIf="loadingusers()">
-      <div class="spinner"></div>
-      <p>Loading more users...</p>
-    </div>
+    <!-- Loading State (Initial) -->
+    <ng-template #loadingState>
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Loading users...</p>
+      </div>
+    </ng-template>
   </div>
-
-  <!-- Loading State (Initial) -->
-  <ng-template #loadingState>
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p class="loading-text">Loading users...</p>
-    </div>
-  </ng-template>
-</div>

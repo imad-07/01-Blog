@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Author } from '../shared/models';
 import { PostService } from '../posts/authpost';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './userslist.html',
   styleUrls: ['./userslist.scss'],
 })
@@ -31,11 +32,10 @@ export class UserslistComponent implements OnInit {
     this.loadingusers.set(false);
   }
 
-  toggleFollow(userId: number) {
-    if (this.followedUsers.has(userId)) {
-      this.followedUsers.delete(userId);
-    } else {
-      this.followedUsers.add(userId);
+  async toggleFollow(user: Author) {
+    const rsp = await this.psr.follow(user.username);
+    if (rsp) {
+      user.status = !user.status;
     }
   }
 
@@ -73,4 +73,5 @@ export class UserslistComponent implements OnInit {
       this.loadingusers.set(false);
     }
   }
+
 }

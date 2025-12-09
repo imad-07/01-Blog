@@ -12,6 +12,7 @@ Blog/Application.class
 Blog/helpers/validators.class
 Blog/model/Comment.class
 Blog/helpers/SecurityConfig.class
+Blog/helpers/RateLimit.class
 Blog/model/Responses.class
 Blog/helpers/JwtAuthFilter.class
 Blog/controller/LikeController$1.class
