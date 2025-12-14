@@ -16,6 +16,8 @@ import Blog.model.Report;
 import Blog.model.ReportPost;
 import Blog.model.ReportResponse;
 import Blog.model.User;
+import Blog.model.UserReport;
+import Blog.model.UserReportResponse;
 
 @Service
 public class AdminService {
@@ -127,10 +129,17 @@ public class AdminService {
         // COMMENTS
         dashboard.setTotalcomments(commentService.countComments());
 
-        // REPORTS
+        // REPORTS (Posts)
         dashboard.setTotalpendingreports(reportService.countPendingReports());
         dashboard.setTotalhandledreports(reportService.countHandledReports());
         dashboard.setTotalreports(dashboard.getTotalpendingreports() + dashboard.getTotalhandledreports());
+
+        // USER REPORTS
+        long pendingUserReports = reportService.countPendingUserReports();
+        long handledUserReports = reportService.countHandledUserReports();
+        dashboard.setTotalpendinguserreports(pendingUserReports);
+        dashboard.setTotalhandleduserreports(handledUserReports);
+        dashboard.setTotaluserreports(pendingUserReports + handledUserReports);
 
         List<User> latestUsers = userService.getLatestUsers();
         List<Author> latestAuthors = latestUsers.stream()
@@ -181,6 +190,51 @@ public class AdminService {
 
     public boolean DeleteUser(long id) {
         return userService.DeleteUser(id);
+    }
+
+    /**
+     * Get user reports for admin panel
+     */
+    public List<UserReportResponse> getAdminUserReportList(long start) {
+        List<UserReportResponse> rs = new ArrayList<>();
+        if (start == 1) {
+            return rs;
+        }
+        List<UserReport> reports = reportService.getUserReports(start);
+        for (UserReport ur : reports) {
+            UserReportResponse response = new UserReportResponse();
+            response.setId(ur.getId());
+            response.setReason(ur.getReason());
+            response.setState(ur.isState());
+
+            // Reporter details
+            User reporter = ur.getReporter();
+            Author reporterAuthor = new Author(
+                    reporter.getId(),
+                    reporter.getAvatar(),
+                    reporter.getUsername(),
+                    reporter.isStatus());
+            response.setReporter(reporterAuthor);
+
+            // Reported user details
+            User reportedUser = ur.getReportedUser();
+            Author reportedAuthor = new Author(
+                    reportedUser.getId(),
+                    reportedUser.getAvatar(),
+                    reportedUser.getUsername(),
+                    reportedUser.isStatus());
+            response.setReportedUser(reportedAuthor);
+
+            rs.add(response);
+        }
+        return rs;
+    }
+
+    /**
+     * Handle user report
+     */
+    public boolean handleUserReport(long reportId) {
+        return reportService.handleUserReport(reportId);
     }
 
 }

@@ -10,7 +10,6 @@ import Blog.helpers.validators;
 import Blog.model.Author;
 import Blog.model.Comment;
 import Blog.model.CommentResponse;
-import Blog.model.Errors;
 import Blog.model.NotificationType;
 import Blog.model.Post;
 import Blog.model.User;
@@ -36,26 +35,25 @@ public class CommentService {
         return commentrepository.countByPostId(id);
     }
 
-    public Errors.Comment_Error AddComment(UserDetails usr, long postid, String cmnt) {
+    public void AddComment(UserDetails usr, long postid, String cmnt) {
         User user = userService.getUserByUsername(usr.getUsername()).orElse(null);
         if (user == null) {
-            return Errors.Comment_Error.InvalidUser;
+            throw new Blog.exception.NotFoundException("User not found");
         }
         Post post = postrepository.findById(postid).orElse(null);
         if (post == null) {
-            return Errors.Comment_Error.InvalidPost;
+            throw new Blog.exception.NotFoundException("Post not found");
         }
         if (!validators.ValidateContent(cmnt)) {
-            return Errors.Comment_Error.InvalidLength;
+            throw new Blog.exception.BadRequestException("Invalid comment length");
         }
         Comment cmt = new Comment(user, post, cmnt);
         commentrepository.save(cmt);
         User reciever = userService.getUserByUsername(post.getAuthor().getUsername()).orElse(null);
         if (reciever == null) {
-            return Errors.Comment_Error.InvalidUser;
+            throw new Blog.exception.NotFoundException("Post author not found");
         }
         notifservice.save(user, reciever, NotificationType.COMMENT);
-        return Errors.Comment_Error.Success;
     }
 
     public List<CommentResponse> GetComments(long id, long start) {
@@ -86,22 +84,18 @@ public class CommentService {
         return rslt;
     }
 
-    public String DeleteComment(UserDetails user, long id) {
-        Comment c = new Comment();
-        try {
-            c = commentrepository.getReferenceById(id);
-        } catch (Exception e) {
-            return "invalid comment";
-        }
+    public void DeleteComment(UserDetails user, long id) {
+        Comment c = commentrepository.findById(id)
+                .orElseThrow(() -> new Blog.exception.NotFoundException("Comment not found"));
+
         User u = userService.getUserByUsername(user.getUsername()).orElse(null);
         if (u == null) {
-            return "invalid user";
+            throw new Blog.exception.NotFoundException("User not found");
         }
         if (c.getUser().getId() != u.getId()) {
-            return "No";
+            throw new Blog.exception.ForbiddenException("You can only delete your own comments");
         }
         commentrepository.deleteByUserIdAndId(u.getId(), c.getId());
-        return "Done";
     }
 
     public Integer Getcommentcount(long id) {

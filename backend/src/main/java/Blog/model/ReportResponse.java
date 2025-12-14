@@ -3,7 +3,7 @@ package Blog.model;
 public class ReportResponse {
     private long id;
     private Author author;
-    private Errors.ReportReason reason;
+    private ReportReason reason;
     private ReportPost post;
     private boolean state;
 
@@ -27,7 +27,7 @@ public class ReportResponse {
         return id;
     }
 
-    public Errors.ReportReason getReason() {
+    public ReportReason getReason() {
         return reason;
     }
 
@@ -43,7 +43,7 @@ public class ReportResponse {
         this.id = id;
     }
 
-    public void setReason(Errors.ReportReason reason) {
+    public void setReason(ReportReason reason) {
         this.reason = reason;
     }
 }

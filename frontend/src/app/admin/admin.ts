@@ -29,6 +29,9 @@ export class Admin implements OnInit {
       totalpendingreports: 0,
       totalhandledreports: 0,
       totalreports: 0,
+      totalpendinguserreports: 0,
+      totalhandleduserreports: 0,
+      totaluserreports: 0,
       star: null,
       mostlikedpost: null,
       latestusers: [],
@@ -39,7 +42,7 @@ export class Admin implements OnInit {
   Reports = signal<Report[]>([]);
   Users = signal<Author[]>([]);
   Dashboard = signal<Dashboard>({} as Dashboard);
-  currentView: 'dashboard' | 'posts' | 'users'= 'dashboard';
+  currentView: 'dashboard' | 'posts' | 'users' = 'dashboard';
   constructor(private psr: PostService) { }
   async ngOnInit() {
     this.admin = await this.psr.GetAdmin()

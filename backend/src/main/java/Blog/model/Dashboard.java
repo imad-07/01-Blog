@@ -13,6 +13,9 @@ public class Dashboard {
     private long totalpendingreports;
     private long totalhandledreports;
     private long totalreports;
+    private long totalpendinguserreports;
+    private long totalhandleduserreports;
+    private long totaluserreports;
     private Author star;
     private PostResponse mostlikedpost;
     private List<Author> latestusers;
@@ -119,5 +122,29 @@ public class Dashboard {
 
     public void setTotalusers(long totalusers) {
         this.totalusers = totalusers;
+    }
+
+    public long getTotalpendinguserreports() {
+        return totalpendinguserreports;
+    }
+
+    public void setTotalpendinguserreports(long totalpendinguserreports) {
+        this.totalpendinguserreports = totalpendinguserreports;
+    }
+
+    public long getTotalhandleduserreports() {
+        return totalhandleduserreports;
+    }
+
+    public void setTotalhandleduserreports(long totalhandleduserreports) {
+        this.totalhandleduserreports = totalhandleduserreports;
+    }
+
+    public long getTotaluserreports() {
+        return totaluserreports;
+    }
+
+    public void setTotaluserreports(long totaluserreports) {
+        this.totaluserreports = totaluserreports;
     }
 }

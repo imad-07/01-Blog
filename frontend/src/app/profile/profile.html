@@ -5,10 +5,15 @@
     <h2>{{ profile().user.username }}</h2>
     <div class="follow-stats">
       <!-- Follow Button -->
-      <button class="follow-btn" [class.following]="isFollowing()" (click)="toggleFollow()">
+      <button class="follow-btn" *ngIf="profile().user.username !== currentUserString" [class.following]="isFollowing()"
+        (click)="toggleFollow()">
         {{ isFollowing() ? 'Following' : 'Follow' }}
       </button>
-
+      <!-- Report Button -->
+      <button class="report-btn" *ngIf="profile().user.username !== currentUserString" (click)="openReportPopup()"
+        title="Report User">
+        ⚠️ Report
+      </button>
     </div>
     <div class="follow-stats">
       <button (click)="toggleFollowers()">
@@ -43,8 +48,7 @@
 
   <div class="posts-grid" (scroll)="getmyposts($event)">
     @if (profile().posts().length > 0) {
-    <app-post-item *ngFor="let post of profile().posts()" [post]="post"
-    [currentUser]="profile().user.username">
+    <app-post-item *ngFor="let post of profile().posts()" [post]="post" [currentUser]="currentUserString">
     </app-post-item>
     } @else {
     <div class="no-posts">
@@ -55,3 +59,17 @@
 
 
 </section>
+
+<!-- Report User Popup -->
+<div class="report-popup" *ngIf="showReportPopup()">
+  <div class="popup-content">
+    <h3>Report User</h3>
+    <p>Reporting: <strong>@{{ profile().user.username }}</strong></p>
+    <div class="reasons">
+      <button *ngFor="let reason of reportReasons" (click)="submitUserReport(reason)">
+        {{ reason }}
+      </button>
+    </div>
+    <button class="close-btn" (click)="closeReportPopup()">Cancel</button>
+  </div>
+</div>

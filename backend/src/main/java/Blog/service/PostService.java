@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import Blog.helpers.validators;
 import Blog.model.Author;
 import Blog.model.Epost;
-import Blog.model.Errors;
 import Blog.model.NotificationType;
 import Blog.model.Post;
 import Blog.model.PostResponse;
@@ -50,10 +49,10 @@ public class PostService {
         this.notifservice = notifservice;
     }
 
-    public Errors.Post_Error AddPost(UserDetails user, Post post, MultipartFile file) {
+    public void AddPost(UserDetails user, Post post, MultipartFile file) {
         if (file != null && !file.isEmpty()) {
             if (file.getSize() > MAX_FILE_SIZE) {
-                return Errors.Post_Error.Media;
+                throw new Blog.exception.BadRequestException("Media file size exceeds limit");
             }
             try {
                 Files.createDirectories(Paths.get(myDir));
@@ -62,19 +61,19 @@ public class PostService {
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                 post.setMedia(myDir + fileName);
             } catch (IOException e) {
-                return Errors.Post_Error.IO;
+                throw new RuntimeException("Failed to save media file", e);
             }
         }
         if (!validators.ValidateContent(post.getContent())) {
-            return Errors.Post_Error.InvalidLength;
-        } else if (!validators.Validatetitle(post.getTitle())) {
-            return Errors.Post_Error.InvalidTitle;
+            throw new Blog.exception.BadRequestException("Invalid content length");
+        }
+        if (!validators.Validatetitle(post.getTitle())) {
+            throw new Blog.exception.BadRequestException("Invalid title length");
         }
         post.setAuthor(uservice.getUserByUsername(user.getUsername()).orElse(null));
         post.setStatus(true);
         postrepository.save(post);
         this.notifservice.notifysubscribers(post.getAuthor().getId(), NotificationType.POST);
-        return Errors.Post_Error.Success;
     }
 
     public List<PostResponse> GetPosts(long start, String usr) {
@@ -98,64 +97,61 @@ public class PostService {
         return respons;
     }
 
-    public Errors.Post_Error EditPost(UserDetails user, Epost bpost) {
-
+    public void EditPost(UserDetails user, Epost bpost) {
         if (!postrepository.getAuthId(bpost.getId()).equals(user.getUsername()) && !user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            return Errors.Post_Error.Fraud;
+            throw new Blog.exception.ForbiddenException("You can only edit your own posts");
         }
+
         if (bpost.getContent() != null) {
             if (!validators.ValidateContent(bpost.getContent())) {
-                return Errors.Post_Error.InvalidLength;
+                throw new Blog.exception.BadRequestException("Invalid content length");
             }
-
             if (postrepository.updateContentById(bpost.getId(), bpost.getContent()) != 1) {
-                return Errors.Post_Error.Internal;
+                throw new RuntimeException("Failed to update post content");
             }
         }
+
         if (bpost.getTitle() != null) {
             if (!validators.Validatetitle(bpost.getTitle())) {
-                return Errors.Post_Error.InvalidTitle;
+                throw new Blog.exception.BadRequestException("Invalid title length");
             }
             if (postrepository.updateTitleById(bpost.getId(), bpost.getTitle()) != 1) {
-                return Errors.Post_Error.Internal;
+                throw new RuntimeException("Failed to update post title");
             }
         }
+
         if (bpost.getMedia() != null && !bpost.getMedia().isEmpty()) {
             if (bpost.getMedia().getSize() > MAX_FILE_SIZE) {
-                return Errors.Post_Error.Media;
+                throw new Blog.exception.BadRequestException("Media file size exceeds limit");
             }
             String m = postrepository.getMedia(bpost.getId());
             String newtype = validators.getFileType(bpost.getMedia().getOriginalFilename());
             String extype = validators.getFileType(m);
             boolean x = newtype.equals(extype);
-            String fileName = "";
             try {
                 Files.createDirectories(Paths.get(myDir));
-                fileName = (m.isEmpty() || !x)
+                String fileName = (m.isEmpty() || !x)
                         ? UUID.randomUUID() + "." + bpost.getMedia().getOriginalFilename()
                         : m.replaceFirst(myDir, "");
                 Path filePath = Paths.get(myDir).resolve(fileName);
                 Files.copy(bpost.getMedia().getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                if (!x) {
+                    postrepository.updateMediaById(bpost.getId(), fileName);
+                }
             } catch (IOException e) {
-                return Errors.Post_Error.IO;
-            }
-            if (!x) {
-                postrepository.updateMediaById(bpost.getId(), fileName);
+                throw new RuntimeException("Failed to save media file", e);
             }
         }
-        return Errors.Post_Error.Success;
     }
 
     public PostResponse GetPost(long id) {
-        Post p = postrepository.findById(id).orElse(null);
-        if (p == null) {
-            return null;
-        }
-        User u = uservice.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
-        if (u == null) {
-            return null;
-        }
+        Post p = postrepository.findById(id)
+                .orElseThrow(() -> new Blog.exception.NotFoundException("Post not found"));
+
+        User u = uservice.getUserByUsername(p.getAuthor().getUsername())
+                .orElseThrow(() -> new Blog.exception.NotFoundException("Post author not found"));
+
         boolean isliked = likerepository.existsByUserIdAndPostId(u.getId(), id);
         PostResponse pr = toPostResponse(p, isliked);
         return pr;

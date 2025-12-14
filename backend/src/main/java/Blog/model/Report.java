@@ -31,7 +31,7 @@ public class Report {
     private Post post;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Errors.ReportReason reason;
+    private ReportReason reason;
     private boolean state;
 
     public boolean isState() {
@@ -50,7 +50,7 @@ public class Report {
         return post;
     }
 
-    public Errors.ReportReason getReason() {
+    public ReportReason getReason() {
         return reason;
     }
 
@@ -66,7 +66,7 @@ public class Report {
         this.post = post;
     }
 
-    public void setReason(Errors.ReportReason reason) {
+    public void setReason(ReportReason reason) {
         this.reason = reason;
     }
 

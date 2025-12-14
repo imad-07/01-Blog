@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import Blog.helpers.validators;
 import Blog.model.Author;
-import Blog.model.Errors;
 import Blog.model.User;
 import Blog.repository.UserRepository;
 
@@ -33,12 +32,15 @@ public class UserService {
     }
 
     // Register a new user
-    public Errors.Register_Error registerUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername()) || !validators.ValidatePassword(user.getUsername())) {
-            return Errors.Register_Error.UsernameError;
+    public void registerUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new Blog.exception.ConflictException("Username already exists");
+        }
+        if (!validators.ValidatePassword(user.getUsername())) {
+            throw new Blog.exception.BadRequestException("Invalid username");
         }
         if (!validators.ValidatePassword(user.getPassword())) {
-            return Errors.Register_Error.PasswordError;
+            throw new Blog.exception.BadRequestException("Invalid password");
         }
         if (!validators.ValidateAvatar(user.getAvatar())) {
             user.setAvatar("default.png");
@@ -47,7 +49,6 @@ public class UserService {
         user.setRole(Role);
         user.setStatus(true);
         userRepository.save(user);
-        return Errors.Register_Error.Success;
     }
 
     // Get user by ID

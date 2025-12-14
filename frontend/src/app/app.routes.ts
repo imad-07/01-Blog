@@ -28,7 +28,7 @@ export const routes: Routes = [
             { path: 'post/edit/:id', component: EditPost, canActivate: [AuthGuard, Editguard] },
             { path: 'profile/:username', component: ProfileComponent, canActivate: [AuthGuard] },
             { path: 'users', component: UserslistComponent, canActivate: [AuthGuard] },
-           // { path: '**', redirectTo: 'feed' }
+            { path: '**', redirectTo: 'feed' }
         ]
     }
 

@@ -3,7 +3,6 @@ package Blog.service;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import Blog.model.Errors;
 import Blog.model.Like;
 import Blog.model.NotificationType;
 import Blog.model.Post;
@@ -18,7 +17,8 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private NotificationService notifservice;
 
-    public LikeService(UserService userService, PostService postService, LikeRepository likeRepository, NotificationService notifservice) {
+    public LikeService(UserService userService, PostService postService, LikeRepository likeRepository,
+            NotificationService notifservice) {
         this.userService = userService;
         this.postService = postService;
         this.likeRepository = likeRepository;
@@ -29,24 +29,26 @@ public class LikeService {
         return likeRepository.countByPostId(postid);
     }
 
-    public Errors.Like_Error Like(UserDetails usr, long postid) {
-
+    public void Like(UserDetails usr, long postid) {
         User user = userService.getUserByUsername(usr.getUsername()).orElse(null);
         if (user == null) {
-            return Errors.Like_Error.InvalidUser;
+            throw new Blog.exception.NotFoundException("User not found");
         }
+
+        // Toggle like: if exists, remove it; otherwise add it
         if (likeRepository.existsByUserIdAndPostId(user.getId(), postid)) {
             likeRepository.deleteByUserIdAndPostId(user.getId(), postid);
-            return Errors.Like_Error.Existing;
+            return;
         }
+
         Post post = postService.postrepository.findById(postid).orElse(null);
         if (post == null) {
-            return Errors.Like_Error.InvalidPost;
+            throw new Blog.exception.NotFoundException("Post not found");
         }
+
         Like like = new Like(user, post);
         this.likeRepository.save(like);
         notifservice.save(user, post.getAuthor(), NotificationType.LIKE);
-        return Errors.Like_Error.Success;
     }
 
     public PostResponse getMostLikedPost(long userId) {

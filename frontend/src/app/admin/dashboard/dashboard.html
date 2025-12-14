@@ -11,7 +11,9 @@
 
   <div *ngIf="!loading && dashboard" class="dashboard-content">
     <!-- Stats Grid -->
-    <div class="stats-grid">
+    <!-- Section: Platform Overview -->
+    <h2 class="section-title">Platform Overview</h2>
+    <div class="stats-grid overview-grid">
       <!-- Users Section -->
       <div class="stat-card users-card">
         <div class="stat-header">
@@ -23,16 +25,16 @@
             <div class="stat-label">Active</div>
             <div class="stat-value active">{{ dashboard.totalactiveusers }}</div>
             <div class="stat-progress">
-              <div class="progress-bar active" 
-                   [style.width.%]="getPercentage(dashboard.totalactiveusers, dashboard.totalusers)"></div>
+              <div class="progress-bar active"
+                [style.width.%]="getPercentage(dashboard.totalactiveusers, dashboard.totalusers)"></div>
             </div>
           </div>
           <div class="stat-item">
             <div class="stat-label">Suspended</div>
             <div class="stat-value suspended">{{ dashboard.totalsuspendedusers }}</div>
             <div class="stat-progress">
-              <div class="progress-bar suspended" 
-                   [style.width.%]="getPercentage(dashboard.totalsuspendedusers, dashboard.totalusers)"></div>
+              <div class="progress-bar suspended"
+                [style.width.%]="getPercentage(dashboard.totalsuspendedusers, dashboard.totalusers)"></div>
             </div>
           </div>
         </div>
@@ -49,16 +51,16 @@
             <div class="stat-label">Active</div>
             <div class="stat-value active">{{ dashboard.totalactiveposts }}</div>
             <div class="stat-progress">
-              <div class="progress-bar active" 
-                   [style.width.%]="getPercentage(dashboard.totalactiveposts, dashboard.totalposts)"></div>
+              <div class="progress-bar active"
+                [style.width.%]="getPercentage(dashboard.totalactiveposts, dashboard.totalposts)"></div>
             </div>
           </div>
           <div class="stat-item">
             <div class="stat-label">Suspended</div>
             <div class="stat-value suspended">{{ dashboard.totalsuspendedposts }}</div>
             <div class="stat-progress">
-              <div class="progress-bar suspended" 
-                   [style.width.%]="getPercentage(dashboard.totalsuspendedposts, dashboard.totalposts)"></div>
+              <div class="progress-bar suspended"
+                [style.width.%]="getPercentage(dashboard.totalsuspendedposts, dashboard.totalposts)"></div>
             </div>
           </div>
         </div>
@@ -71,11 +73,15 @@
         </div>
         <div class="large-number">{{ dashboard.totalcomments }}</div>
       </div>
+    </div>
 
-      <!-- Reports Section -->
+    <!-- Section: Moderation Center -->
+    <h2 class="section-title">Moderation Center</h2>
+    <div class="stats-grid moderation-grid">
+      <!-- Post Reports Section -->
       <div class="stat-card reports-card">
         <div class="stat-header">
-          <h3>🚨 Reports</h3>
+          <h3>🚨 Post Reports</h3>
           <span class="stat-badge">{{ dashboard.totalreports }}</span>
         </div>
         <div class="stat-body">
@@ -83,16 +89,42 @@
             <div class="stat-label">Pending</div>
             <div class="stat-value pending">{{ dashboard.totalpendingreports }}</div>
             <div class="stat-progress">
-              <div class="progress-bar pending" 
-                   [style.width.%]="getPercentage(dashboard.totalpendingreports, dashboard.totalreports)"></div>
+              <div class="progress-bar pending"
+                [style.width.%]="getPercentage(dashboard.totalpendingreports, dashboard.totalreports)"></div>
             </div>
           </div>
           <div class="stat-item">
             <div class="stat-label">Handled</div>
             <div class="stat-value handled">{{ dashboard.totalhandledreports }}</div>
             <div class="stat-progress">
-              <div class="progress-bar handled" 
-                   [style.width.%]="getPercentage(dashboard.totalhandledreports, dashboard.totalreports)"></div>
+              <div class="progress-bar handled"
+                [style.width.%]="getPercentage(dashboard.totalhandledreports, dashboard.totalreports)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Reports Section -->
+      <div class="stat-card reports-card user-reports-card">
+        <div class="stat-header">
+          <h3>⚠️ User Reports</h3>
+          <span class="stat-badge">{{ dashboard.totaluserreports }}</span>
+        </div>
+        <div class="stat-body">
+          <div class="stat-item">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value pending">{{ dashboard.totalpendinguserreports }}</div>
+            <div class="stat-progress">
+              <div class="progress-bar pending"
+                [style.width.%]="getPercentage(dashboard.totalpendinguserreports, dashboard.totaluserreports)"></div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Handled</div>
+            <div class="stat-value handled">{{ dashboard.totalhandleduserreports }}</div>
+            <div class="stat-progress">
+              <div class="progress-bar handled"
+                [style.width.%]="getPercentage(dashboard.totalhandleduserreports, dashboard.totaluserreports)"></div>
             </div>
           </div>
         </div>
@@ -126,9 +158,8 @@
               <span class="stat-item">💬 {{ dashboard.mostlikedpost.cmts }}</span>
             </div>
           </div>
-          <img [src]="getAvatarUrl(dashboard.mostlikedpost.author.avatar)" 
-               [alt]="dashboard.mostlikedpost.author.username" 
-               class="post-author-avatar">
+          <img [src]="getAvatarUrl(dashboard.mostlikedpost.author.avatar)"
+            [alt]="dashboard.mostlikedpost.author.username" class="post-author-avatar">
         </div>
       </div>
     </div>

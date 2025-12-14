@@ -35,10 +35,9 @@ export class PostItemComponent {
     this.selectedPostId = null;
   }
 
-  async submitReport(reason: string) {
-    let resp = await this.psr.report(this.post.id, reason);
-    console.log(resp);
-    
+   submitReport(reason: string) {
+    this.psr.report(this.post.id, reason);  
+   this.closeReportPopup();  
   }
   async onLike() {
     let rsp = await this.psr.like(this.post.id);

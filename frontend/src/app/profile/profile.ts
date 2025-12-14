@@ -5,6 +5,7 @@ import { PostService } from '../posts/authpost';
 import { PostItemComponent } from "../posts/post-item/post-item";
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { ReportService } from '../services/report.service';
 
 @Component({
   selector: 'app-profile',
@@ -26,6 +27,11 @@ export class ProfileComponent {
   showFollowing = false;
   isFollowing = signal(false);
   username = "";
+
+  // Report popup properties
+  reportReasons = ['SPAM', 'HARASSMENT', 'INAPPROPRIATE', 'COPYRIGHT', 'MISINFORMATION', 'OTHER'];
+  showReportPopup = signal(false);
+
   async toggleFollow() {
     let username = this.profile().user.username;
     const rsp = await this.psr.follow(username);
@@ -34,8 +40,18 @@ export class ProfileComponent {
 
     }
   }
-  constructor(private psr: PostService, private auth: AuthService, private route: ActivatedRoute, private router: Router) { }
+  currentUserString = "";
+
+  constructor(private psr: PostService, private auth: AuthService, private route: ActivatedRoute, private router: Router, private reportService: ReportService) { }
   async ngOnInit() {
+    // Get current user for self-report check
+    try {
+      const user = await this.auth.whoami();
+      this.currentUserString = user.username;
+    } catch (e) {
+      // User might not be logged in or token invalid
+    }
+
     this.route.paramMap.subscribe(async params => {
       this.username = params.get('username') || '';
       let profile = await this.psr.fetchProfile(this.username);
@@ -75,5 +91,27 @@ export class ProfileComponent {
       this.lastid = posts[posts.length - 1].id;
       this.loading = false;
     }
+  }
+
+  /**
+   * Open report popup for this user
+   */
+  openReportPopup() {
+    this.showReportPopup.set(true);
+  }
+
+  closeReportPopup() {
+    this.showReportPopup.set(false);
+  }
+
+  submitUserReport(reason: string) {
+    this.reportService.reportUser(this.profile().user.id, reason).subscribe({
+      next: () => {
+        this.closeReportPopup();
+      },
+      error: () => {
+        // Error handled by interceptor
+      }
+    });
   }
 }

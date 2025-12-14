@@ -38,6 +38,11 @@
         class="filter-btn suspended-btn">
         Suspended
       </button>
+
+      <button [class.active]="filterStatus() === 'reports'" (click)="onFilterChange('reports')"
+        class="filter-btn reports-btn">
+        Reports
+      </button>
     </div>
   </div>
 
@@ -46,8 +51,55 @@
     <div class="spinner"></div>
   </div>
 
+  <!-- User Reports List -->
+  <div *ngIf="!loading() && filterStatus() === 'reports'" class="user-reports-list"
+    (scroll)="ReportsInfiniteScroll($event)">
+    <div *ngIf="reports().length === 0" class="empty-state">
+      <div class="empty-icon">✓</div>
+      <h3>No reports found</h3>
+      <p>No user reports to review</p>
+    </div>
+
+    <div *ngFor="let report of reports()" class="report-card">
+      <div class="report-header">
+        <span class="report-id">#{{report.id}}</span>
+        <span class="report-reason">{{report.reason}}</span>
+        <span [class]="'status-badge ' + (report.state() ? 'handled' : 'pending')">
+          {{ report.state() ? 'Handled' : 'Pending' }}
+        </span>
+      </div>
+
+      <div class="report-users">
+        <div class="reporter">
+          <span class="label">Reporter:</span>
+          <div class="user-info-mini">
+            <img [src]="getAvatarUrl(report.reporter.avatar)" class="avatar-mini">
+            <span>{{report.reporter.username}}</span>
+          </div>
+        </div>
+        <div class="arrow">➔</div>
+        <div class="reported">
+          <span class="label">Reported:</span>
+          <div class="user-info-mini">
+            <img [src]="getAvatarUrl(report.reportedUser.avatar)" class="avatar-mini">
+            <span>{{report.reportedUser.username}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-actions" *ngIf="!report.state()">
+        <button class="handle-btn" (click)="handleReport(report)">
+          Mark as Handled
+        </button>
+        <button class="view-btn" (click)="viewReportedUser(report.reportedUser.username)">
+          View User
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Users List -->
-  <div *ngIf="!loading()" class="users-list" (scroll)="Userinfinitescroll($event)">
+  <div *ngIf="!loading() && filterStatus() !== 'reports'" class="users-list" (scroll)="Userinfinitescroll($event)">
     <div *ngIf="filteredUsers().length === 0" class="empty-state">
       <div class="empty-icon">😔</div>
       <h3>No users found</h3>

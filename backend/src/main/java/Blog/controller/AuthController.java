@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import Blog.helpers.JwtUtil;
-import Blog.model.Errors;
 import Blog.model.Responses.UserResponse;
 import Blog.model.User;
 import Blog.service.UserService;
@@ -28,22 +27,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> Registeruser(@RequestBody User user) {
-        Errors.Register_Error Err = userService.registerUser(user);
-        switch (Err) {
-            case Errors.Register_Error.RegisterError:
-                String rsp = "Registration Error";
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp);
-            case Errors.Register_Error.UsernameError:
-                String rsp1 = "Invalid Username";
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp1);
-            case Errors.Register_Error.PasswordError:
-                String rsp2 = "Invalid Password";
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rsp2);
-            default:
-                String rsp3 = "Registration Succed";
-                return ResponseEntity.status(HttpStatus.CREATED).body(rsp3);
-        }
+    public ResponseEntity<Object> Registeruser(@RequestBody User user) {
+        userService.registerUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(java.util.Map.of("message", "User registered successfully"));
     }
 
     @PostMapping("/login")

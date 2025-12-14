@@ -16,6 +16,7 @@ import Blog.model.AdminPost;
 import Blog.model.AdminResponse;
 import Blog.model.Author;
 import Blog.model.ReportResponse;
+import Blog.model.UserReportResponse;
 import Blog.service.AdminService;
 
 @RestController
@@ -83,5 +84,23 @@ public class AdminController {
         Boolean result = adminService.DeleteUser(id);
         return result ? ResponseEntity.status(HttpStatus.OK).body(result)
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
+
+    /**
+     * Get paginated user reports for admin panel
+     */
+    @GetMapping("/user-reports/{id}")
+    public ResponseEntity<List<UserReportResponse>> getUserReports(@PathVariable("id") long id) {
+        List<UserReportResponse> reports = adminService.getAdminUserReportList(id);
+        return ResponseEntity.status(HttpStatus.OK).body(reports);
+    }
+
+    /**
+     * Mark a user report as handled
+     */
+    @PatchMapping("/user-report/{id}")
+    public ResponseEntity<Boolean> handleUserReport(@PathVariable("id") long id) {
+        Boolean result = adminService.handleUserReport(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

@@ -80,6 +80,9 @@ export interface Dashboard {
   totalpendingreports: number;
   totalhandledreports: number;
   totalreports: number;
+  totalpendinguserreports: number;
+  totalhandleduserreports: number;
+  totaluserreports: number;
   star: Author | null;
   mostlikedpost: Post | null;
   latestusers: Author[];
@@ -88,6 +91,13 @@ export interface Report {
   id: number;
   author: Author;
   post: ReportPost;
+  reason: string;
+  state: WritableSignal<boolean>;
+}
+export interface UserReport {
+  id: number;
+  reporter: Author;
+  reportedUser: Author;
   reason: string;
   state: WritableSignal<boolean>;
 }

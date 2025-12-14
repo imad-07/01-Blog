@@ -88,13 +88,31 @@ $color-highlight: #8b5cf6;
   gap: 2rem;
 }
 
-// Stats Grid
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem 0;
+  color: $light-text;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-text;
+  }
+}
+
+// Stats Grids
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+}
 
-  @media (max-width: 768px) {
+.overview-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.moderation-grid {
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -295,7 +313,7 @@ $color-highlight: #8b5cf6;
     align-items: center;
     gap: 1rem;
 
-    > div {
+    >div {
       flex: 1;
     }
 

@@ -32,7 +32,7 @@
             </div>
 
             <!-- Follow Button -->
-            <button class="follow-button" [class.followed]="user.status" (click)="toggleFollow(user.username)"
+            <button class="follow-button" [class.followed]="user.status" (click)="toggleFollow(user)"
               [attr.aria-label]="user.status ? 'Unfollow ' + user.username : 'Follow ' + user.username">
               <svg class="button-icon" *ngIf="!user.status" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   Post, Comment, ProfileResponse, AdminResponse, AdminPost, Report,
-  Notification, Author, ReportPost, Dashboard, Profile
+  Notification, Author, ReportPost, Dashboard, Profile, UserReport
 } from '../shared/models';
 
 @Injectable({
@@ -57,6 +57,9 @@ export class PostService {
     totalpendingreports: 0,
     totalhandledreports: 0,
     totalreports: 0,
+    totalpendinguserreports: 0,
+    totalhandleduserreports: 0,
+    totaluserreports: 0,
     star: { ...this.EMPTY_AUTHOR },
     mostlikedpost: { ...this.EMPTY_POST },
     latestusers: []
@@ -236,6 +239,13 @@ export class PostService {
     );
   }
 
+  async UpdateUserReportStatus(id: number): Promise<boolean> {
+    return this.safe(
+      firstValueFrom(this.http.patch<boolean>(`${this.apiUrl}admin/user-report/${id}`, {})),
+      false
+    );
+  }
+
   async getAdminposts(start: number): Promise<AdminPost[]> {
     return this.safe(
       (async () => {
@@ -267,6 +277,20 @@ export class PostService {
   async getAdminusers(start: number): Promise<Author[]> {
     return this.safe(
       firstValueFrom(this.http.get<Author[]>(`${this.apiUrl}admin/user/${start}`)),
+      []
+    );
+  }
+
+  async getAdminUserReports(start: number): Promise<UserReport[]> {
+    return this.safe(
+      (async () => {
+        const reports = await firstValueFrom(this.http.get<UserReport[]>(`${this.apiUrl}admin/user-reports/${start}`));
+        const arr = reports ?? [];
+        arr.forEach(r => {
+          if (!isSignal(r.state)) r.state = signal(r.state ?? false);
+        });
+        return arr;
+      })(),
       []
     );
   }
@@ -317,7 +341,7 @@ export class PostService {
       firstValueFrom(this.http.get<Author[]>(`${this.apiUrl}user/${id}`)),
       [])
   }
-    async Deleteuser(id: number): Promise<boolean> {
+  async Deleteuser(id: number): Promise<boolean> {
     return this.safe(
       firstValueFrom(this.http.delete<boolean>(`${this.apiUrl}admin/rm-user/${id}`)),
       false

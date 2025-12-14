@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Blog.model.Errors;
 import Blog.service.ReportService;
 
 @RestController
@@ -18,16 +17,15 @@ import Blog.service.ReportService;
 public class ReportController {
     private final ReportService reportservice;
 
-    public ReportController(ReportService reportservice){
+    public ReportController(ReportService reportservice) {
         this.reportservice = reportservice;
     }
+
     @PostMapping("/{id}")
-    public ResponseEntity<Errors.ReportError> Report(@AuthenticationPrincipal UserDetails user, @RequestParam String reason, @PathVariable("id") long id) {  
-        Errors.ReportError Reporterror  = reportservice.Report(user, id, reason);
-        if (Reporterror == Errors.ReportError.Success){
-            return ResponseEntity.status(HttpStatus.OK).body(Reporterror);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Reporterror);
+    public ResponseEntity<Object> Report(@AuthenticationPrincipal UserDetails user, @RequestParam String reason,
+            @PathVariable("id") long id) {
+        reportservice.Report(user, id, reason);
+        return ResponseEntity.status(HttpStatus.OK).body(java.util.Map.of("message", "Post reported successfully"));
     }
 
 }

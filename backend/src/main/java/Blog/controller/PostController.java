@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import Blog.model.Epost;
-import Blog.model.Errors;
 import Blog.model.Post;
 import Blog.model.PostResponse;
 import Blog.service.PostService;
@@ -36,30 +35,17 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<String> Addpost(@AuthenticationPrincipal UserDetails user,
+    public ResponseEntity<Object> Addpost(@AuthenticationPrincipal UserDetails user,
             @RequestParam("content") String content,
             @RequestParam("title") String title,
             @RequestParam(value = "media", required = false) MultipartFile file) {
         Post post = new Post();
-
         post.setContent(Jsoup.clean(content, Safelist.basic()));
         post.setTitle(Jsoup.clean(title, Safelist.basic()));
-        if (user == null) {
-            System.exit(0);
-        }
-        Errors.Post_Error err = service.AddPost(user, post, file);
-        switch (err) {
-            case Errors.Post_Error.InvalidLength:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Content Length");
-            case Errors.Post_Error.InvalidTitle:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Title Length");
-            case Errors.Post_Error.Media:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Media Size");
-            case Errors.Post_Error.IO:
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-            default:
-                return ResponseEntity.status(HttpStatus.CREATED).body("Success");
-        }
+
+        service.AddPost(user, post, file);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(java.util.Map.of("message", "Post created successfully"));
     }
 
     @GetMapping("/{st}")
@@ -70,39 +56,22 @@ public class PostController {
     }
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> editPost(
+    public ResponseEntity<Object> editPost(
             @AuthenticationPrincipal UserDetails user,
             @RequestPart("post") Epost bpost,
-            @RequestPart(value = "media", required = false) MultipartFile media
+            @RequestPart(value = "media", required = false) MultipartFile media) {
 
-    ) {
         if (media != null) {
             bpost.setMedia(media);
         }
-        Errors.Post_Error Err = service.EditPost(user, bpost);
-        switch (Err) {
-            case Errors.Post_Error.InvalidLength:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Content Length");
-            case Errors.Post_Error.InvalidTitle:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Title Length");
-            case Errors.Post_Error.Media:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Media Size");
-            case Errors.Post_Error.Fraud:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You only edit you own posts");
-            case Errors.Post_Error.Internal:
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-            default:
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body("Success");
-        }
+        service.EditPost(user, bpost);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(java.util.Map.of("message", "Post updated successfully"));
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<PostResponse> GetPost(@PathVariable long id) {
-
         PostResponse p = service.GetPost(id);
-        if (p == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
         return ResponseEntity.status(HttpStatus.OK).body(p);
     }
 

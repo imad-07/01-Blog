@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import Blog.model.CommentResponse;
-import Blog.model.Errors;
 import Blog.service.CommentService;
 
 @RestController
@@ -28,19 +27,10 @@ public class CommentController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<String> Comment(@AuthenticationPrincipal UserDetails user, @PathVariable("id") long id,
+    public ResponseEntity<Object> Comment(@AuthenticationPrincipal UserDetails user, @PathVariable("id") long id,
             @RequestBody String content) {
-        Errors.Comment_Error e = commentservice.AddComment(user, id, content);
-        switch (e) {
-            case Errors.Comment_Error.InvalidLength:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("InvalidLength");
-            case Errors.Comment_Error.InvalidPost:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("InvalidPost");
-            case Errors.Comment_Error.InvalidUser:
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("InvalidUser");
-            default:
-                return ResponseEntity.status(HttpStatus.OK).body("Comment Added Successfully");
-        }
+        commentservice.AddComment(user, id, content);
+        return ResponseEntity.status(HttpStatus.OK).body(java.util.Map.of("message", "Comment added successfully"));
     }
 
     @GetMapping("/{id}/{start}")
@@ -51,9 +41,9 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> DeleteComment(@AuthenticationPrincipal UserDetails user,
+    public ResponseEntity<Void> DeleteComment(@AuthenticationPrincipal UserDetails user,
             @PathVariable("id") long id) {
-        String rsp = commentservice.DeleteComment(user, id);
-        return ResponseEntity.status(HttpStatus.OK).body(rsp);
+        commentservice.DeleteComment(user, id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
