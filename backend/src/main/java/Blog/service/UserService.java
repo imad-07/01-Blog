@@ -33,7 +33,7 @@ public class UserService {
 
     // Register a new user
     public void registerUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsernameIgnoreCase(user.getUsername())) {
             throw new Blog.exception.ConflictException("Username already exists");
         }
         if (!validators.ValidatePassword(user.getUsername())) {

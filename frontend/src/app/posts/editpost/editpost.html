@@ -12,10 +12,14 @@
       <label>Media (optional)</label>
       <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*" />
 
-      <ng-container *ngIf="mediaUrl; else showExisting">
+      <ng-container *ngIf="mediaUrl && mediaUrl(); else showExisting">
         <div class="media-preview" [ngSwitch]="type">
-          <img *ngSwitchCase="'image'" [src]="mediaUrl()" alt="{{ title() }}" />
-          <video *ngSwitchCase="'video'" [src]="mediaUrl()" controls></video>
+          <div class="media-container" style="position: relative; display: inline-block;">
+            <img *ngSwitchCase="'image'" [src]="mediaUrl()" alt="{{ title() }}" style="max-width: 100%;" />
+            <video *ngSwitchCase="'video'" [src]="mediaUrl()" controls style="max-width: 100%;"></video>
+            <button type="button" (click)="removeMedia()"
+              style="position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;">X</button>
+          </div>
         </div>
       </ng-container>
 

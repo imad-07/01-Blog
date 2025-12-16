@@ -22,7 +22,7 @@ public class AdminInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (!userRepository.existsByUsername("admin")) {
+        if (!userRepository.existsByUsernameIgnoreCase("admin")) {
             User admin = new User();
             admin.setUsername("admin");
             admin.setAvatar("admin.jpg");

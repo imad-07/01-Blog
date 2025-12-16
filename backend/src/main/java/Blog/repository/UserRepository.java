@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
 
+    boolean existsByUsernameIgnoreCase(String username);
+
     @Query("SELECT u.avatar FROM User u WHERE u.username = :username")
     String getAvatar(@Param("username") String username);
 

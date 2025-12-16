@@ -99,8 +99,9 @@ public class PostService {
     }
 
     public void EditPost(UserDetails user, Epost bpost) {
-        if (!postrepository.getAuthId(bpost.getId()).getUsername().equals(user.getUsername()) && !user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+        if (!postrepository.getAuthId(bpost.getId()).getUsername().equals(user.getUsername())
+                && !user.getAuthorities().stream()
+                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
             throw new Blog.exception.ForbiddenException("You can only edit your own posts");
         }
 
@@ -122,13 +123,26 @@ public class PostService {
             }
         }
 
+        if (Boolean.TRUE.equals(bpost.getDeleteMedia())) {
+            String m = postrepository.getMedia(bpost.getId());
+            if (m != null && !m.isEmpty()) {
+                try {
+                    Path filePath = Paths.get(myDir).resolve(m);
+                    Files.deleteIfExists(filePath);
+                    postrepository.updateMediaById(bpost.getId(), null);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to delete media file", e);
+                }
+            }
+        }
+
         if (bpost.getMedia() != null && !bpost.getMedia().isEmpty()) {
             if (bpost.getMedia().getSize() > MAX_FILE_SIZE) {
                 throw new Blog.exception.BadRequestException("Media file size exceeds limit");
             }
             String m = postrepository.getMedia(bpost.getId());
-            if(m == null){
-                m="";
+            if (m == null) {
+                m = "";
             }
             String newtype = validators.getFileType(bpost.getMedia().getOriginalFilename());
             String extype = validators.getFileType(m);

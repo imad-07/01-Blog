@@ -17,10 +17,11 @@ export class EditPost implements OnInit {
   title: WritableSignal<string> = signal('');
   content = '';
   type = '';
-  mediaUrl?: WritableSignal<string | ArrayBuffer | null> = signal(null);;
+  mediaUrl?: WritableSignal<string | ArrayBuffer | null> = signal(null);
   selectedFile: WritableSignal<File | null> = signal(null);
   previewUrl: WritableSignal<string | ArrayBuffer | null> = signal(null);
   existingMediaUrl: string | null = null;
+  deleteMedia = false;
 
   originalTitle = '';
   originalContent = '';
@@ -39,7 +40,11 @@ export class EditPost implements OnInit {
           this.type = post.media?.type || '';
           this.title.set(post.title);
           this.content = post.content;
-          this.mediaUrl?.set(`http://localhost:8080/files/posts/${post.media?.url}`);
+          if (post.media && post.media.url) {
+            this.mediaUrl?.set(`http://localhost:8080/files/posts/${post.media.url}`);
+          } else {
+            this.mediaUrl?.set(null);
+          }
           this.originalTitle = post.title;
           this.originalContent = post.content;
         },
@@ -63,28 +68,43 @@ export class EditPost implements OnInit {
       this.selectedFile.set(null);
       this.mediaUrl?.set(null);
     }
+    this.deleteMedia = false;
   }
+
+  removeMedia() {
+    this.mediaUrl?.set(null);
+    this.selectedFile.set(null);
+    this.deleteMedia = true;
+  }
+
   onSubmit() {
     const token = localStorage.getItem('JWT');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
+    const postPayload: any = {
+      id: this.postId,
+      title: this.title(),
+      content: this.content
+    };
+
+    if (this.deleteMedia) {
+      postPayload.deleteMedia = true;
+    }
+
     const formData = new FormData();
     formData.append(
       'post',
-      new Blob([JSON.stringify({
-        id: this.postId,
-        title: this.title(),
-        content: this.content
-      })], { type: 'application/json' })
+      new Blob([JSON.stringify(postPayload)], { type: 'application/json' })
     );
 
-    if (this.selectedFile) {
+    if (this.selectedFile() && !this.deleteMedia) {
       formData.append('media', this.selectedFile()!);
     }
 
     this.http.patch(`http://localhost:8080/post`, formData, { headers })
       .subscribe(() => console.log('Post updated successfully'));
   }
+
   onbackClick(): void {
     this.router.navigate([`feed`])
   }
