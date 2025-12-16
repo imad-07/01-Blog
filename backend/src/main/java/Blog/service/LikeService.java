@@ -42,7 +42,7 @@ public class LikeService {
         }
 
         Post post = postService.postrepository.findById(postid).orElse(null);
-        if (post == null) {
+        if (post == null || !post.isStatus()) {
             throw new Blog.exception.NotFoundException("Post not found");
         }
 

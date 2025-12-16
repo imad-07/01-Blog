@@ -66,7 +66,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int updatestatusById(@Param("id") Long id);
 
     @Query("SELECT p.author FROM Post p WHERE p.id = ?1")
-    String getAuthId(long id);
+    User getAuthId(long id);
 
     @Query("SELECT p.status FROM Post p WHERE p.id = ?1")
     boolean getStatus(long id);

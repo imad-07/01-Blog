@@ -41,8 +41,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findTop3ByOrderByCreatedAtDesc();
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM User u WHERE u.id = :userid")
-    int deleteUserById(@Param("userid") Long userid);
 }

@@ -58,8 +58,9 @@ public class PostService {
                 Files.createDirectories(Paths.get(myDir));
                 String fileName = UUID.randomUUID() + "." + file.getOriginalFilename();
                 Path filePath = Paths.get(myDir).resolve(fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                post.setMedia(myDir + fileName);
+                System.out.println(Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING));
+                post.setMedia(fileName);
+                System.out.println(post.getMedia());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save media file", e);
             }
@@ -98,7 +99,7 @@ public class PostService {
     }
 
     public void EditPost(UserDetails user, Epost bpost) {
-        if (!postrepository.getAuthId(bpost.getId()).equals(user.getUsername()) && !user.getAuthorities().stream()
+        if (!postrepository.getAuthId(bpost.getId()).getUsername().equals(user.getUsername()) && !user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
             throw new Blog.exception.ForbiddenException("You can only edit your own posts");
         }
@@ -126,6 +127,9 @@ public class PostService {
                 throw new Blog.exception.BadRequestException("Media file size exceeds limit");
             }
             String m = postrepository.getMedia(bpost.getId());
+            if(m == null){
+                m="";
+            }
             String newtype = validators.getFileType(bpost.getMedia().getOriginalFilename());
             String extype = validators.getFileType(m);
             boolean x = newtype.equals(extype);

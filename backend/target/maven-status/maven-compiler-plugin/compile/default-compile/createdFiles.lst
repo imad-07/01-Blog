@@ -1,3 +1,4 @@
+Blog/controller/UserReportController.class
 Blog/model/NotificationType.class
 Blog/model/AdminResponse.class
 Blog/Application.class
@@ -22,6 +23,7 @@ Blog/service/CommentService.class
 Blog/error/GlobalExceptionHandler.class
 Blog/helpers/JwtUtil.class
 Blog/repository/UserRepository.class
+Blog/repository/UserReportRepository.class
 Blog/helpers/CustomAccessDeniedHandler.class
 Blog/repository/FollowRepository.class
 Blog/controller/ReportController.class
@@ -45,6 +47,7 @@ Blog/repository/CommentRepository.class
 Blog/model/Follow.class
 Blog/model/User.class
 Blog/helpers/SecurityConfig.class
+Blog/model/UserReportResponse.class
 Blog/controller/FollowController.class
 Blog/repository/ReportRepository.class
 Blog/CorsConfig$1.class
@@ -66,6 +69,7 @@ Blog/repository/LikeRepository.class
 Blog/model/Responses.class
 Blog/CorsConfig.class
 Blog/repository/PostRepository.class
+Blog/model/UserReport.class
 Blog/controller/CommentController.class
 Blog/controller/testcontroller.class
 Blog/exception/ForbiddenException.class

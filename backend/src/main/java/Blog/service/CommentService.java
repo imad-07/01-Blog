@@ -41,7 +41,7 @@ public class CommentService {
             throw new Blog.exception.NotFoundException("User not found");
         }
         Post post = postrepository.findById(postid).orElse(null);
-        if (post == null) {
+        if (post == null || !post.isStatus()) {
             throw new Blog.exception.NotFoundException("Post not found");
         }
         if (!validators.ValidateContent(cmnt)) {

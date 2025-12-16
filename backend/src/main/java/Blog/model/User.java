@@ -87,6 +87,36 @@ public class User {
         return createdAt;
     }
 
+    @jakarta.persistence.OneToMany(mappedBy = "author", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Post> posts;
+
+    @jakarta.persistence.OneToMany(mappedBy = "user", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Like> likes;
+
+    @jakarta.persistence.OneToMany(mappedBy = "user", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Comment> comments;
+
+    @jakarta.persistence.OneToMany(mappedBy = "follower", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Follow> following;
+
+    @jakarta.persistence.OneToMany(mappedBy = "followed", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Follow> followers;
+
+    @jakarta.persistence.OneToMany(mappedBy = "reporter", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserReport> reports;
+
+    @jakarta.persistence.OneToMany(mappedBy = "reportedUser", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserReport> reported;
+
+    @jakarta.persistence.OneToMany(mappedBy = "sender", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Notification> sentNotifications;
+
+    @jakarta.persistence.OneToMany(mappedBy = "reciever", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Notification> receivedNotifications;
+
+    @jakarta.persistence.OneToMany(mappedBy = "user", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Report> postReports;
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

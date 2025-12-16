@@ -99,4 +99,13 @@ public class Post {
         this.media = Media;
     }
 
+    @jakarta.persistence.OneToMany(mappedBy = "post", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Like> likes;
+
+    @jakarta.persistence.OneToMany(mappedBy = "post", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Comment> comments;
+
+    @jakarta.persistence.OneToMany(mappedBy = "post", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Report> reports;
+
 }

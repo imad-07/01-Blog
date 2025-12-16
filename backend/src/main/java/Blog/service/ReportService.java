@@ -35,7 +35,7 @@ public class ReportService {
             throw new Blog.exception.NotFoundException("User not found");
         }
         Post post = postservice.postrepository.findById(postid).orElse(null);
-        if (post == null) {
+        if (post == null || !post.isStatus()) {
             throw new Blog.exception.NotFoundException("Post not found");
         }
         ReportReason reason = toReportError(Reson);

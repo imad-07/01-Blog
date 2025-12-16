@@ -134,8 +134,12 @@ public class UserService {
         return userRepository.updatestatusById(id);
     }
 
-    public Boolean DeleteUser(long postid) {
-        return userRepository.deleteUserById(postid) == 1;
+    public Boolean DeleteUser(long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 }
