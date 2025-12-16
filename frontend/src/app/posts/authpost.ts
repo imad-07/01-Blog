@@ -41,7 +41,7 @@ export class PostService {
     timestamp: new Date(),
     likes: 0,
     comments: signal<Comment[]>([]),
-    liked: false,
+    liked: signal(false),
     showcmts: false,
     cmts: 0,
     status: 'Active'
@@ -99,6 +99,7 @@ export class PostService {
         return (ps ?? []).map(e => {
           if (!isSignal(e.comments)) e.comments = signal(e.comments ?? []);
           e.showcmts = false;
+          if (!isSignal(e.liked)) e.liked = signal(e.liked ?? false);
           return e;
         });
       })(),
@@ -113,6 +114,7 @@ export class PostService {
         return (ps ?? []).map(e => {
           if (!isSignal(e.comments)) e.comments = signal(e.comments ?? []);
           e.showcmts = false;
+          if (!isSignal(e.liked)) e.liked = signal(e.liked ?? false);
           return e;
         });
       })(),
@@ -129,17 +131,17 @@ export class PostService {
 
   async like(postid: Number): Promise<boolean> {
     return this.safe(
-      firstValueFrom(this.http.post(`${this.apiUrl}like/${postid}`, {}, { responseType: 'text' }))
-        .then(res => res === 'PostLikedSuccess'),
+      firstValueFrom(this.http.post(`${this.apiUrl}like/${postid}`, {}, { responseType: 'json' }))
+        .then(() => true),
       false
     );
   }
 
-  async addComment(postid: number, content: string): Promise<boolean> {
+  async addComment(postid: number, content: string): Promise<Comment | null> {
     return this.safe(
-      firstValueFrom(this.http.post(`${this.apiUrl}comment/${postid}`, content, { responseType: 'text' }))
-        .then(() => true),
-      false
+      firstValueFrom(this.http.post<Comment>(`${this.apiUrl}comment/${postid}`, content))
+        .then(res => res),
+      null
     );
   }
 
@@ -168,6 +170,7 @@ export class PostService {
           if (!isSignal(response.profile.followed)) response.profile.followed = signal(response.profile.followed ?? false);
           response.profile.posts().forEach(p => {
             if (!isSignal(p.comments)) p.comments = signal(p.comments ?? []);
+            if (!isSignal(p.liked)) p.liked = signal(p.liked ?? false);
           });
         }
 

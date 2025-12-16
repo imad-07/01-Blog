@@ -1,5 +1,5 @@
-<article class="post-card">
-  <div class="media">
+<article class="post-card" [class.no-media]="!post.media">
+  <div class="media" *ngIf="post.media">
     <ng-container [ngSwitch]="post.media?.type">
       <img *ngSwitchCase="'image'" [src]="getMediaUrl(post.media?.url || '')" alt="{{ post.title }}" />
       <video *ngSwitchCase="'video'" [src]="getMediaUrl(post.media?.url || '')" controls></video>
@@ -22,7 +22,7 @@
 
   <div class="actions">
     <div class="stats">
-      <button (click)="onLike()">{{ post.liked ? '❤️' : '🤍' }} {{ post.likes }}</button>
+      <button (click)="onLike()">{{ post.liked() ? '❤️' : '🤍' }} {{ post.likes }}</button>
       <button (click)="toggleComments()">💬 {{ post.cmts }}</button>
     </div>
     <button *ngIf="post.author.username === currentUser" class="edit-btn" (click)="onEdit()">Edit</button>
@@ -31,12 +31,8 @@
   </div>
 
   <!-- Comments component -->
-  <app-post-comments
-    *ngIf="post.showcmts"
-    [postId]="post.id"
-    [comments]="post.comments!"
-    [backendUrl]="backendUrl"
-    [currentuser] = "currentUser">
+  <app-post-comments *ngIf="post.showcmts" [postId]="post.id" [comments]="post.comments!" [backendUrl]="backendUrl"
+    [currentuser]="currentUser" (commentAdded)="onCommentAdded()">
   </app-post-comments>
 </article>
 

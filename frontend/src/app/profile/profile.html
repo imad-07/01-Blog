@@ -5,12 +5,12 @@
     <h2>{{ profile().user.username }}</h2>
     <div class="follow-stats">
       <!-- Follow Button -->
-      <button class="follow-btn" *ngIf="profile().user.username !== currentUserString" [class.following]="isFollowing()"
+      <button class="follow-btn" *ngIf="profile().user.username !== currentUser()" [class.following]="isFollowing()"
         (click)="toggleFollow()">
         {{ isFollowing() ? 'Following' : 'Follow' }}
       </button>
       <!-- Report Button -->
-      <button class="report-btn" *ngIf="profile().user.username !== currentUserString" (click)="openReportPopup()"
+      <button class="report-btn" *ngIf="profile().user.username !== currentUser()" (click)="openReportPopup()"
         title="Report User">
         ⚠️ Report
       </button>
@@ -48,7 +48,7 @@
 
   <div class="posts-grid" (scroll)="getmyposts($event)">
     @if (profile().posts().length > 0) {
-    <app-post-item *ngFor="let post of profile().posts()" [post]="post" [currentUser]="currentUserString">
+    <app-post-item *ngFor="let post of profile().posts()" [post]="post" [currentUser]="currentUser()">
     </app-post-item>
     } @else {
     <div class="no-posts">

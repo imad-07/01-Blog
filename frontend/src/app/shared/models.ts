@@ -58,7 +58,7 @@ export interface Post {
   timestamp: Date;
   likes: number;
   comments: WritableSignal<Comment[]>;
-  liked: boolean;
+  liked: WritableSignal<boolean>;
   showcmts?: boolean;
   cmts: number;
   status: PostStatus;

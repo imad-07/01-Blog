@@ -5,16 +5,37 @@
   background: #fff;
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: scroll;
+  overflow: auto;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   height: 465px;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-4px);
   }
 
+  &.no-media {
+
+    .content {
+      justify-content: center;
+      padding: 2rem;
+
+      h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+    }
+  }
+
   /* --- Media --- */
   .media {
+
     img,
     video {
       width: 100%;
@@ -196,8 +217,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 
     .content {
-      h3 { color: #eee; }
-      p { color: #ccc; }
+      h3 {
+        color: #eee;
+      }
+
+      p {
+        color: #ccc;
+      }
     }
 
     .meta {
@@ -216,7 +242,9 @@
       .edit-btn {
         color: #ccc;
 
-        &:hover { color: #fff; }
+        &:hover {
+          color: #fff;
+        }
       }
 
       .edit-btn {
@@ -231,20 +259,27 @@
       .report-btn {
         color: #ff6666;
 
-        &:hover { color: #ff4d4d; }
+        &:hover {
+          color: #ff4d4d;
+        }
       }
     }
   }
 
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 }
 
 .report-popup {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -338,12 +373,26 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

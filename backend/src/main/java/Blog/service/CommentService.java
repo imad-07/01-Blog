@@ -35,7 +35,7 @@ public class CommentService {
         return commentrepository.countByPostId(id);
     }
 
-    public void AddComment(UserDetails usr, long postid, String cmnt) {
+    public CommentResponse AddComment(UserDetails usr, long postid, String cmnt) {
         User user = userService.getUserByUsername(usr.getUsername()).orElse(null);
         if (user == null) {
             throw new Blog.exception.NotFoundException("User not found");
@@ -54,6 +54,13 @@ public class CommentService {
             throw new Blog.exception.NotFoundException("Post author not found");
         }
         notifservice.save(user, reciever, NotificationType.COMMENT);
+
+        CommentResponse r = new CommentResponse();
+        r.setId(cmt.getId());
+        r.setContent(cmt.getContent());
+        Author a = new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus());
+        r.setAuthor(a);
+        return r;
     }
 
     public List<CommentResponse> GetComments(long id, long start) {
@@ -79,6 +86,7 @@ public class CommentService {
             }
             Author a = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
             r.setAuthor(a);
+            // r.setTimestamp(c.getTimestamp().toString());
             rslt.add(r);
         }
         return rslt;

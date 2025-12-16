@@ -52,6 +52,9 @@ public class NotificationService {
     }
 
     public void save(User sender, User reciever, NotificationType type) {
+        if (sender.getId().equals(reciever.getId())) {
+            return;
+        }
         Notification n = new Notification();
         n.setSender(sender);
         n.setReciever(reciever);

@@ -27,10 +27,12 @@ public class CommentController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Object> Comment(@AuthenticationPrincipal UserDetails user, @PathVariable("id") long id,
+    public ResponseEntity<CommentResponse> Comment(@AuthenticationPrincipal UserDetails user,
+            @PathVariable("id") long id,
             @RequestBody String content) {
-        commentservice.AddComment(user, id, content);
-        return ResponseEntity.status(HttpStatus.OK).body(java.util.Map.of("message", "Comment added successfully"));
+        CommentResponse c = commentservice.AddComment(user, id, content);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(c);
     }
 
     @GetMapping("/{id}/{start}")

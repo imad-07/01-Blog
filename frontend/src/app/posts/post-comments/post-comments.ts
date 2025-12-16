@@ -1,4 +1,4 @@
-import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../authpost';
@@ -15,10 +15,11 @@ export class PostCommentsComponent {
   @Input() comments: WritableSignal<Comment[]> = signal([]);
   @Input() backendUrl!: string;
   @Input() currentuser: string = "";
-  
+  @Output() commentAdded = new EventEmitter<void>();
+
   loading = false;
 
-  constructor(private psr: PostService) {    
+  constructor(private psr: PostService) {
   }
 
   getAvatarUrl(avatar: string): string {
@@ -29,7 +30,11 @@ export class PostCommentsComponent {
     const content = input.value.trim();
     if (!content) return;
 
-    await this.psr.addComment(this.postId, content);
+    const newComment = await this.psr.addComment(this.postId, content);
+    if (newComment) {      
+      this.comments.update(c => [newComment, ...c]);
+      this.commentAdded.emit();
+    }
     input.value = '';
   }
 

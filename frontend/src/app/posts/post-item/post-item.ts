@@ -35,15 +35,15 @@ export class PostItemComponent {
     this.selectedPostId = null;
   }
 
-   submitReport(reason: string) {
-    this.psr.report(this.post.id, reason);  
-   this.closeReportPopup();  
+  submitReport(reason: string) {
+    this.psr.report(this.post.id, reason);
+    this.closeReportPopup();
   }
   async onLike() {
     let rsp = await this.psr.like(this.post.id);
-    if (rsp){
-    this.post.liked = !this.post.liked;
-    this.post.likes += this.post.liked ? 1 : -1;
+    if (rsp) {
+      this.post.liked.set(!this.post.liked());
+      this.post.likes += this.post.liked() ? 1 : -1;
     }
   }
 
@@ -66,9 +66,13 @@ export class PostItemComponent {
   onReport(postId: number) {
     console.log('Reporting post', postId);
   }
-  async Delete(id:number){
+  async Delete(id: number) {
     let rsp = await this.psr.DeLetePost(id);
     console.log(rsp);
+  }
+
+  onCommentAdded() {
+    this.post.cmts++;
   }
 
 }

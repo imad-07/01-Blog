@@ -38,16 +38,25 @@ export class ProfileComponent {
     if (rsp) {
       this.isFollowing.set(!this.isFollowing());
 
+      let followers = this.profile().followers;
+      if (this.isFollowing()) {
+        followers = [...followers, this.currentUserObj];
+      } else {
+        followers = followers.filter(f => f.username !== this.currentUserObj.username);
+      }
+      this.profile.update(p => ({ ...p, followers }));
     }
   }
-  currentUserString = "";
+  currentUserObj: any = {};
+  currentUser = signal("");
 
   constructor(private psr: PostService, private auth: AuthService, private route: ActivatedRoute, private router: Router, private reportService: ReportService) { }
   async ngOnInit() {
     // Get current user for self-report check
     try {
       const user = await this.auth.whoami();
-      this.currentUserString = user.username;
+      this.currentUserObj = user;
+      this.currentUser.set(user.username);
     } catch (e) {
       // User might not be logged in or token invalid
     }
