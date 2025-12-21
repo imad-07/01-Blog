@@ -58,7 +58,7 @@ public class CommentService {
         CommentResponse r = new CommentResponse();
         r.setId(cmt.getId());
         r.setContent(cmt.getContent());
-        Author a = new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus());
+        Author a = new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus(), user.getRole());
         r.setAuthor(a);
         return r;
     }
@@ -84,7 +84,7 @@ public class CommentService {
             if (u == null) {
                 return new ArrayList<>();
             }
-            Author a = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
+            Author a = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole());
             r.setAuthor(a);
             // r.setTimestamp(c.getTimestamp().toString());
             rslt.add(r);

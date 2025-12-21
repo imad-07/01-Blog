@@ -105,7 +105,8 @@ public class UserService {
                         u.getId(),
                         u.getAvatar(),
                         u.getUsername(),
-                        user != null && followservice.isFollowing(user, u)))
+                        user != null && followservice.isFollowing(user, u),
+                        u.getRole()))
                 .collect(Collectors.toList());
 
         return authors;
@@ -124,7 +125,8 @@ public class UserService {
         }
         List<User> usrs = userRepository.findTop20ByIdLessThanOrderByIdDesc(startid);
         List<Author> authors = usrs.stream()
-                .map(u -> new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus()))
+                .filter(u -> !"ADMIN".equals(u.getRole()))
+                .map(u -> new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole()))
                 .collect(Collectors.toList());
         return authors;
 

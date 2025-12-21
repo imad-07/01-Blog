@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
@@ -11,11 +11,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './register.scss'
 })
 export class Register {
-  username = '';
-  password = '';
-  avatarid:string ='';
+  username = signal('');
+  password = signal('');
+  avatarid = signal('');
   avatars: string[] = [];
-  selectedAvatar: string = '';
+  selectedAvatar = signal('');
+
+  isUsernameValid = computed(() => this.username().length >= 4 && this.username().length <= 24);
+  isPasswordValid = computed(() => this.password().length >= 4 && this.password().length <= 24);
+  isFormValid = computed(() => this.isUsernameValid() && this.isPasswordValid() && this.selectedAvatar() !== '');
+
   constructor(private auth: AuthService, private router: Router) { }
   ngOnInit() {
     const count = 30;
@@ -24,25 +29,22 @@ export class Register {
     }
   }
 
-  selectAvatar(avatar: string, id:number) {
-    this.selectedAvatar = avatar;
-    this.avatarid = id+1 +".png" 
+  selectAvatar(avatar: string, id: number) {
+    this.selectedAvatar.set(avatar);
+    this.avatarid.set(id + 1 + ".png");
   }
   onSubmit() {
-
-      if (!this.selectedAvatar) {
-        alert('Please select an avatar');
-        return;
-      }
-      this.auth.register(this.username, this.password, this.avatarid).subscribe({
-        next: (res) => {
-
-          this.auth.saveToken(res.token);
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          alert('Register failed');
-        }
-      });
+    if (!this.isFormValid()) {
+      return;
     }
+    this.auth.register(this.username(), this.password(), this.avatarid()).subscribe({
+      next: (res) => {
+        this.auth.saveToken(res.token);
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        // Handled by ErrorInterceptor
+      }
+    });
   }
+}

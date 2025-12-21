@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, WritableSignal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, WritableSignal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../authpost';
@@ -17,7 +17,13 @@ export class PostCommentsComponent {
   @Input() currentuser: string = "";
   @Output() commentAdded = new EventEmitter<void>();
 
+  newCommentText = signal('');
   loading = false;
+
+  isCommentValid = computed(() => {
+    const text = this.newCommentText().trim();
+    return text.length >= 2 && text.length <= 2500;
+  });
 
   constructor(private psr: PostService) {
   }
@@ -26,16 +32,16 @@ export class PostCommentsComponent {
     return `http://localhost:8080/avatars/${avatar}`;
   }
 
-  async onSubmit(input: HTMLInputElement) {
-    const content = input.value.trim();
-    if (!content) return;
+  async onSubmit() {
+    const content = this.newCommentText().trim();
+    if (!this.isCommentValid()) return;
 
     const newComment = await this.psr.addComment(this.postId, content);
-    if (newComment) {      
+    if (newComment) {
       this.comments.update(c => [newComment, ...c]);
       this.commentAdded.emit();
+      this.newCommentText.set('');
     }
-    input.value = '';
   }
 
   async deleteComment(commentId: number) {

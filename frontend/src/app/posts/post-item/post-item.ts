@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { PostService } from '../authpost';
 import { Post } from '../../shared/models';
 import { PostCommentsComponent } from '../post-comments/post-comments';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-post-item',
@@ -16,28 +17,38 @@ export class PostItemComponent {
   @Input() post!: Post;
   @Input() backendUrl!: string;
   @Input() currentUser!: string;
+  @Output() onDelete = new EventEmitter<number>();
 
-  constructor(private psr: PostService, private router: Router) {
-  }
+  constructor(
+    private psr: PostService,
+    private router: Router,
+    private snackbar: SnackbarService
+  ) { }
   // post-item.component.ts
   reportReasons = ['SPAM', 'HARASSMENT', 'INAPPROPRIATE', 'COPYRIGHT', 'MISINFORMATION', 'OTHER'];
 
-  showReportPopup = false;
-  selectedPostId: number | null = null;
+  showReportPopup = signal(false);
+  selectedPostId = signal<number | null>(null);
 
   openReportPopup(postId: number) {
-    this.selectedPostId = postId;
-    this.showReportPopup = true;
+    this.selectedPostId.set(postId);
+    this.showReportPopup.set(true);
   }
 
   closeReportPopup() {
-    this.showReportPopup = false;
-    this.selectedPostId = null;
+    this.showReportPopup.set(false);
+    this.selectedPostId.set(null);
   }
 
-  submitReport(reason: string) {
-    this.psr.report(this.post.id, reason);
+  async submitReport(reason: string) {
+    let rsp = await this.psr.report(this.post.id, reason);
     this.closeReportPopup();
+    if (rsp !== 'Error') {
+      this.snackbar.showMessage('Report submitted successfully');
+    } else {
+      this.snackbar.showMessage('Failed to submit report', true);
+    }
+
   }
   async onLike() {
     let rsp = await this.psr.like(this.post.id);
@@ -68,7 +79,12 @@ export class PostItemComponent {
   }
   async Delete(id: number) {
     let rsp = await this.psr.DeLetePost(id);
-    console.log(rsp);
+    if (rsp) {
+      this.snackbar.showMessage('Post deleted successfully');
+      this.onDelete.emit(id);
+    } else {
+      this.snackbar.showMessage('Failed to delete post', true);
+    }
   }
 
   onCommentAdded() {

@@ -170,6 +170,9 @@ public class PostService {
         User u = uservice.getUserByUsername(p.getAuthor().getUsername())
                 .orElseThrow(() -> new Blog.exception.NotFoundException("Post author not found"));
 
+        if (!p.isStatus()) {
+            throw new Blog.exception.NotFoundException("Post not found");
+        }
         boolean isliked = likerepository.existsByUserIdAndPostId(u.getId(), id);
         PostResponse pr = toPostResponse(p, isliked);
         return pr;
@@ -186,7 +189,7 @@ public class PostService {
             }
             start = p.getId() + 1;
         }
-        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr);
+        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorAndStatusTrueOrderByIdDesc(start, usr);
         List<PostResponse> respons = toPostResponseList(posts, usr.getId());
         return respons;
     }
@@ -202,7 +205,7 @@ public class PostService {
             }
             start = p.getId() + 1;
         }
-        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorOrderByIdDesc(start, usr);
+        List<Post> posts = postrepository.findTop20ByIdLessThanAndAuthorAndStatusTrueOrderByIdDesc(start, usr);
         List<PostResponse> respons = toPostResponseList(posts, usr.getId());
         return respons;
     }
@@ -240,7 +243,8 @@ public class PostService {
         User user = uservice.getUserByUsername(post.getAuthor().getUsername()).orElse(null);
         if (user == null)
             return null;
-        response.setAuthor(new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus()));
+        response.setAuthor(
+                new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus(), user.getRole()));
 
         response.setId(post.getId());
         response.setTitle(post.getTitle());
@@ -307,7 +311,7 @@ public class PostService {
     }
 
     public boolean deletemypost(UserDetails user, long postid) {
-        if (!postrepository.getAuthId(postid).equals(user.getUsername())) {
+        if (!postrepository.getAuthId(postid).getUsername().equals(user.getUsername())) {
             return false;
         }
         return DeletePost(postid);

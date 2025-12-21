@@ -8,22 +8,28 @@
     <form (ngSubmit)="onSubmit()">
       <label>Select an Avatar</label>
       <div class="avatar-scroll">
-        <div class="avatar-item" 
-             *ngFor="let avatar of avatars; let i = index"
-  [id]="'avatar-' + i"
-  [class.selected]="avatar === selectedAvatar"
-  (click)="selectAvatar(avatar, i)">
+        <div class="avatar-item" *ngFor="let avatar of avatars; let i = index" [id]="'avatar-' + i"
+          [class.selected]="avatar === selectedAvatar()" (click)="selectAvatar(avatar, i)">
           <img [src]="avatar" alt="avatar" />
         </div>
       </div>
+      <div class="error-text" *ngIf="selectedAvatar() === '' && username() !== ''">Please select an avatar</div>
 
       <label>Username</label>
-      <input [(ngModel)]="username" name="username" required>
+      <input [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" required
+        placeholder="4-24 characters" [class.invalid]="username() !== '' && !isUsernameValid()">
+      <div class="error-text" *ngIf="username() !== '' && !isUsernameValid()">Username must be between 4 and 24
+        characters</div>
 
       <label>Password</label>
-      <input [(ngModel)]="password" name="password" type="password" required>
+      <input [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" type="password" required
+        placeholder="4-24 characters" [class.invalid]="password() !== '' && !isPasswordValid()">
+      <div class="error-text" *ngIf="password() !== '' && !isPasswordValid()">Password must be between 4 and 24
+        characters</div>
 
-      <button type="submit" class="btn-primary">Register</button>
+      <button type="submit" class="btn-primary" [disabled]="!isFormValid()" [class.disabled]="!isFormValid()">
+        Register
+      </button>
     </form>
 
     <p class="switch-auth">

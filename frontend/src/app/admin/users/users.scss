@@ -1,3 +1,4 @@
+@use 'sass:color';
 // users-management.component.scss
 
 // Color variables
@@ -846,7 +847,7 @@ $color-search: #3b82f6;
 
       .report-reason {
         background: rgba($color-suspended, 0.15);
-        color: lighten($color-suspended, 10%);
+        color: color.adjust($color-suspended, $lightness: 10%);
       }
 
       .status-badge {
@@ -878,7 +879,7 @@ $color-search: #3b82f6;
 
         &:hover {
           border-color: $color-search;
-          background: lighten($dark-bg-secondary, 5%);
+          background: color.adjust($dark-bg-secondary, $lightness: 5%);
         }
 
         .avatar-mini {
@@ -894,7 +895,7 @@ $color-search: #3b82f6;
     .report-actions button {
       &.handle-btn {
         background: rgba($color-search, 0.15);
-        color: lighten($color-search, 10%);
+        color: color.adjust($color-search, $lightness: 10%);
         border-color: rgba($color-search, 0.3);
 
         &:hover {

@@ -67,7 +67,8 @@ export interface Author {
   avatar: string;
   username: string;
   status: boolean;
-  id: number
+  id: number;
+  role: string;
 }
 export interface Dashboard {
   totalactiveusers: number;

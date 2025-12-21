@@ -43,12 +43,31 @@ export class Admin implements OnInit {
   Users = signal<Author[]>([]);
   Dashboard = signal<Dashboard>({} as Dashboard);
   currentView: 'dashboard' | 'posts' | 'users' = 'dashboard';
+  loading = signal(false);
+
   constructor(private psr: PostService) { }
+
   async ngOnInit() {
-    this.admin = await this.psr.GetAdmin()
-    this.Posts.set(this.admin.posts)
-    this.Reports.set(this.admin.reports)
-    this.Users.set(this.admin.users)
-    this.Dashboard.set(this.admin.dashboard)
+    await this.fetchData();
+  }
+
+  async fetchData() {
+    this.loading.set(true);
+    try {
+      this.admin = await this.psr.GetAdmin();
+      this.Posts.set(this.admin.posts);
+      this.Reports.set(this.admin.reports);
+      this.Users.set(this.admin.users);
+      this.Dashboard.set(this.admin.dashboard);
+    } catch (error) {
+      console.error('Failed to fetch admin data:', error);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async setView(view: 'dashboard' | 'posts' | 'users') {
+    this.currentView = view;
+    await this.fetchData();
   }
 }

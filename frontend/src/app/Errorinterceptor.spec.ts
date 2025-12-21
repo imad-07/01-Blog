@@ -37,7 +37,7 @@ describe('errorInterceptor', () => {
                 expect(snackBarSpy.open).toHaveBeenCalledWith(
                     'Backend String Error',
                     'Close',
-                    jasmine.objectContaining({ panelClass: ['my-snackbar-error'] })
+                    jasmine.objectContaining({ panelClass: ['error-snackbar'] })
                 );
                 done();
             },
@@ -58,7 +58,7 @@ describe('errorInterceptor', () => {
                 expect(snackBarSpy.open).toHaveBeenCalledWith(
                     'Backend JSON Message',
                     'Close',
-                    jasmine.objectContaining({ panelClass: ['my-snackbar-error'] })
+                    jasmine.objectContaining({ panelClass: ['error-snackbar'] })
                 );
                 done();
             },
@@ -79,7 +79,7 @@ describe('errorInterceptor', () => {
                 expect(snackBarSpy.open).toHaveBeenCalledWith(
                     'Backend JSON Error Prop',
                     'Close',
-                    jasmine.objectContaining({ panelClass: ['my-snackbar-error'] })
+                    jasmine.objectContaining({ panelClass: ['error-snackbar'] })
                 );
                 done();
             },
@@ -100,7 +100,7 @@ describe('errorInterceptor', () => {
                 expect(snackBarSpy.open).toHaveBeenCalledWith(
                     'Network Error - Please check your connection',
                     'Close',
-                    jasmine.objectContaining({ panelClass: ['my-snackbar-error'] })
+                    jasmine.objectContaining({ panelClass: ['error-snackbar'] })
                 );
                 done();
             },
@@ -120,7 +120,7 @@ describe('errorInterceptor', () => {
                 expect(snackBarSpy.open).toHaveBeenCalledWith(
                     'Network Error - Unable to reach server',
                     'Close',
-                    jasmine.objectContaining({ panelClass: ['my-snackbar-error'] })
+                    jasmine.objectContaining({ panelClass: ['error-snackbar'] })
                 );
                 done();
             },

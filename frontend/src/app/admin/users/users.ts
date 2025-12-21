@@ -6,7 +6,8 @@ import { Author, UserReport } from '../../shared/models';
 import { PostService } from '../../posts/authpost';
 import { ConfirmationPopupComponent } from '../../shared/confirmation/confirmation';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router } from '@angular/router';  // ← Add MatDialog import
+import { Router } from '@angular/router';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-users',
@@ -36,7 +37,8 @@ export class UsersComponent {
   constructor(
     private psr: PostService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private snackbar: SnackbarService
   ) { }
 
   filteredUsers = computed(() => {
@@ -61,6 +63,9 @@ export class UsersComponent {
           u.username === user.username ? { ...u, status: !u.status } : u
         )
       );
+      this.snackbar.showMessage(`User status updated to ${!user.status ? 'Active' : 'Suspended'}`);
+    } else {
+      this.snackbar.showMessage('Failed to update user status', true);
     }
   }
 
@@ -100,15 +105,12 @@ export class UsersComponent {
 
   async handleReport(report: UserReport) {
     // Call backend to handle report
-    const success = await this.psr.UpdateReportStatus(report.id); // Reusing existing method if compatible, else create new
-    if (success) {
+    const userReportSuccess = await this.psr.UpdateUserReportStatus(report.id);
+    if (userReportSuccess) {
       report.state.set(true);
+      this.snackbar.showMessage('User report handled successfully');
     } else {
-      // Try specific user report endpoint if generic one fails, but let's assume reuse for now or new method needed
-      // Actually PostService has UpdateReportStatus calling /admin/report/{id} but that's for Post reports usually.
-      // We need UpdateUserReportStatus.
-      const userReportSuccess = await this.psr.UpdateUserReportStatus(report.id);
-      if (userReportSuccess) report.state.set(true);
+      this.snackbar.showMessage('Failed to handle user report', true);
     }
   }
 
@@ -132,11 +134,14 @@ export class UsersComponent {
   async deleteUser(user: Author) {
     // User confirmed, proceed with deletion
     const rsp = await this.psr.Deleteuser(user.id);
-    console.log(rsp);
-
-    // Remove user from list
-    this.users.update(users =>
-      users.filter(u => u.id !== user.id)
-    );
+    if (rsp) {
+      this.snackbar.showMessage('User deleted successfully');
+      // Remove user from list
+      this.users.update(users =>
+        users.filter(u => u.id !== user.id)
+      );
+    } else {
+      this.snackbar.showMessage('Failed to delete user', true);
+    }
   }
 }

@@ -82,7 +82,7 @@ public class FollowService {
         User user = userService.getUserById(userid).orElse(null);
         if (user == null)
             return null;
-        return new Author(user.getId(),user.getAvatar(), user.getUsername(), user.isStatus());
+        return new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus(), user.getRole());
     }
 
     public List<Author> toAuthorList(List<Follow> follows, boolean followers) {
@@ -96,14 +96,17 @@ public class FollowService {
             if (user == null) {
                 return null;
             }
-            authors.add(new Author(user.getId(),user.getAvatar(), user.getUsername(), user.isStatus()));
+            authors.add(
+                    new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus(), user.getRole()));
         }
         return authors;
     }
 
     public User mostfolloweduser() {
-        long id = followRepository.findMostFollowedUserId();
-        User user = userService.getUserById(id).orElse(null);
-        return user;
+        Long id = followRepository.findMostFollowedUserId();
+        if (id == null) {
+            return null;
+        }
+        return userService.getUserById(id).orElse(null);
     }
 }

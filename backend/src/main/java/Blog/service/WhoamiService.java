@@ -18,14 +18,15 @@ public class WhoamiService {
         User u = us.getUserByUsername(user.getUsername()).orElse(null);
         Author a = null;
         if (u != null) {
-            a = new Author(u.getId(),u.getAvatar(), u.getUsername(), u.isStatus());
+            a = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole());
         }
         return a;
     }
-        public Author Whoami(User user) {
+
+    public Author Whoami(User user) {
         Author a = null;
         if (user != null) {
-            a = new Author(user.getId(),user.getAvatar(), user.getUsername(), user.isStatus());
+            a = new Author(user.getId(), user.getAvatar(), user.getUsername(), user.isStatus(), user.getRole());
         }
         return a;
     }

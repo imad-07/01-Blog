@@ -12,6 +12,8 @@
     <img class="avatar" (click)="profile()" [src]="author.avatar" />
     <span class="username" (click)="profile()">@{{ author.username }}</span>
     <span class="username" (click)="explore()">Explore</span>
+    <span *ngIf="author.role === 'ADMIN'" class="username admin-link" (click)="router.navigate(['admin'])">Admin
+      Dashboard</span>
     <button class="logout-btn" (click)="logout()">Logout</button>
   </div>
 </header>

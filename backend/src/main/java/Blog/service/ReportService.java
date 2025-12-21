@@ -84,7 +84,6 @@ public class ReportService {
 
     public boolean HandleReport(long id) {
         Integer x = reportRepository.SetHandledById(id);
-        System.out.println(x);
         return x == 1 ? true : false;
     }
 

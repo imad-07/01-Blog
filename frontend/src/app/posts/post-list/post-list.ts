@@ -40,8 +40,12 @@ export class PostListComponent implements OnInit {
       this.loading = true;
       const posts = await this.psr.getposts(this.lastid);
       this.posts.update(p => [...p, ...posts]);
-      this.lastid = posts[posts.length - 1].id;
+      this.lastid = posts.length > 0 ? posts[posts.length - 1].id : 0;
       this.loading = false;
     }
+  }
+
+  handleDelete(postId: number) {
+    this.posts.update(p => p.filter(post => post.id !== postId));
   }
 }

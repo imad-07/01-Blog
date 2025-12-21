@@ -52,8 +52,14 @@ public class LikeService {
     }
 
     public PostResponse getMostLikedPost(long userId) {
-        long id = likeRepository.findMostLikedPostId();
+        Long id = likeRepository.findMostLikedPostId();
+        if (id == null) {
+            return null;
+        }
         Post p = postService.postrepository.findById(id).orElse(null);
+        if (p == null) {
+            return null;
+        }
         boolean isliked = likeRepository.existsByUserIdAndPostId(userId, p.getId());
         PostResponse pr = postService.toPostResponse(p, isliked);
         return pr;

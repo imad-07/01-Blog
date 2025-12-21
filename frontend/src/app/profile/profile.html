@@ -48,7 +48,8 @@
 
   <div class="posts-grid" (scroll)="getmyposts($event)">
     @if (profile().posts().length > 0) {
-    <app-post-item *ngFor="let post of profile().posts()" [post]="post" [currentUser]="currentUser()">
+    <app-post-item *ngFor="let post of profile().posts()" [post]="post" [currentUser]="currentUser()"
+      (onDelete)="handleDelete($event)">
     </app-post-item>
     } @else {
     <div class="no-posts">

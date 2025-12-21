@@ -6,7 +6,8 @@
         <div class="comment-header">
           <span class="username">@{{ comment.author.username }}</span>
           <span class="timestamp">{{ comment.timestamp | date: 'short' }}</span>
-          <button *ngIf="comment.author.username === currentuser" class="delete-btn" (click)="deleteComment(comment.id)">delete</button>
+          <button *ngIf="comment.author.username === currentuser" class="delete-btn"
+            (click)="deleteComment(comment.id)">delete</button>
         </div>
         <p>{{ comment.content }}</p>
       </div>
@@ -17,8 +18,14 @@
     <p class="no-comments">No comments yet. Be the first to reply!</p>
   </ng-template>
 
-  <form class="add-comment" (ngSubmit)="onSubmit(commentInput)">
-    <input #commentInput type="text" placeholder="Write a comment..." required />
-    <button type="submit">Comment</button>
+  <form class="add-comment" (ngSubmit)="onSubmit()">
+    <div class="comment-input-wrapper">
+      <input [ngModel]="newCommentText()" (ngModelChange)="newCommentText.set($event)" name="commentContent" type="text"
+        placeholder="Write a comment..." required [class.invalid]="newCommentText() !== '' && !isCommentValid()" />
+      <div class="error-text" *ngIf="newCommentText() !== '' && !isCommentValid()">
+        Comment must be 2-2500 characters
+      </div>
+    </div>
+    <button type="submit" [disabled]="!isCommentValid()" [class.disabled]="!isCommentValid()">Comment</button>
   </form>
 </div>

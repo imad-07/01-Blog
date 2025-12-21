@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 import { Navbar } from './navbar';
+import { AuthService } from '../../auth/auth.service';
 
 describe('Navbar', () => {
   let component: Navbar;
@@ -8,9 +12,15 @@ describe('Navbar', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Navbar]
+      imports: [Navbar],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideRouter([]),
+        { provide: AuthService, useValue: { whoami: () => Promise.resolve({ username: 'testuser' }) } }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(Navbar);
     component = fixture.componentInstance;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import Blog.model.AdminPost;
@@ -53,11 +54,11 @@ public class AdminService {
             report.setReason(sr.getReason());
             Post p = sr.getPost();
             User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
-            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
+            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole());
             ReportPost pr = new ReportPost(p.getId(), p.getTitle(), p.getContent(), postauthor);
             report.setPost(pr);
             User us = sr.getUser();
-            Author a = new Author(u.getId(), us.getAvatar(), us.getUsername(), us.isStatus());
+            Author a = new Author(us.getId(), us.getAvatar(), us.getUsername(), us.isStatus(), us.getRole());
             report.setAuthor(a);
             report.setState(sr.isState());
             rs.add(report);
@@ -79,7 +80,8 @@ public class AdminService {
             // Get the user who authored the post
             User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
             Author postAuthor = new Author(u.getId(), u != null ? u.getAvatar() : null,
-                    u != null ? u.getUsername() : null, u != null ? u.isStatus() : false);
+                    u != null ? u.getUsername() : null, u != null ? u.isStatus() : false,
+                    u != null ? u.getRole() : null);
 
             // Build the AdminPost object
             AdminPost ap = new AdminPost(
@@ -106,6 +108,11 @@ public class AdminService {
     }
 
     public boolean UpdateUserStatus(long id) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.getUserByUsername(currentUsername).orElse(null);
+        if (currentUser != null && currentUser.getId() == id && currentUser.getRole().equals("ADMIN")) {
+            return false;
+        }
         return userService.togglestatus(id) == 1;
     }
 
@@ -143,15 +150,21 @@ public class AdminService {
 
         List<User> latestUsers = userService.getLatestUsers();
         List<Author> latestAuthors = latestUsers.stream()
-                .map(u -> new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus()))
+                .filter(u -> !"ADMIN".equals(u.getRole()))
+                .map(u -> new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole()))
                 .collect(Collectors.toList());
         dashboard.setLatestusers(latestAuthors);
         User star = followService.mostfolloweduser();
-        Author austar = new Author(star.getId(), star.getAvatar(), star.getUsername(), star.isStatus());
-        dashboard.setStar(austar);
+        if (star != null) {
+            Author austar = new Author(star.getId(), star.getAvatar(), star.getUsername(), star.isStatus(),
+                    star.getRole());
+            dashboard.setStar(austar);
+        }
         long id = userService.getAdminid();
         PostResponse p = likeService.getMostLikedPost(id);
-        dashboard.setMostlikedpost(p);
+        if (p != null) {
+            dashboard.setMostlikedpost(p);
+        }
         return dashboard;
     }
 
@@ -167,11 +180,11 @@ public class AdminService {
             report.setReason(sr.getReason());
             Post p = sr.getPost();
             User u = userService.getUserByUsername(p.getAuthor().getUsername()).orElse(null);
-            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus());
+            Author postauthor = new Author(u.getId(), u.getAvatar(), u.getUsername(), u.isStatus(), u.getRole());
             ReportPost pr = new ReportPost(p.getId(), p.getTitle(), p.getContent(), postauthor);
             report.setPost(pr);
             User us = sr.getUser();
-            Author a = new Author(u.getId(), us.getAvatar(), us.getUsername(), us.isStatus());
+            Author a = new Author(us.getId(), us.getAvatar(), us.getUsername(), us.isStatus(), us.getRole());
             report.setAuthor(a);
             report.setState(sr.isState());
             rs.add(report);
@@ -189,6 +202,11 @@ public class AdminService {
     }
 
     public boolean DeleteUser(long id) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.getUserByUsername(currentUsername).orElse(null);
+        if (currentUser != null && currentUser.getId() == id) {
+            return false;
+        }
         return userService.DeleteUser(id);
     }
 
@@ -213,7 +231,8 @@ public class AdminService {
                     reporter.getId(),
                     reporter.getAvatar(),
                     reporter.getUsername(),
-                    reporter.isStatus());
+                    reporter.isStatus(),
+                    reporter.getRole());
             response.setReporter(reporterAuthor);
 
             // Reported user details
@@ -222,7 +241,8 @@ public class AdminService {
                     reportedUser.getId(),
                     reportedUser.getAvatar(),
                     reportedUser.getUsername(),
-                    reportedUser.isStatus());
+                    reportedUser.isStatus(),
+                    reportedUser.getRole());
             response.setReportedUser(reportedAuthor);
 
             rs.add(response);

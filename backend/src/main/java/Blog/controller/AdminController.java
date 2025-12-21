@@ -64,7 +64,8 @@ public class AdminController {
     @PatchMapping("/userstatus/{id}")
     public ResponseEntity<Boolean> UpdateStatusUser(@PathVariable("id") long id) {
         Boolean result = adminService.UpdateUserStatus(id);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return result ? ResponseEntity.status(HttpStatus.OK).body(result)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 
     @GetMapping("/reports/{id}")

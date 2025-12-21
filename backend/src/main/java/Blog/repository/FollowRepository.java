@@ -29,5 +29,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     void deleteByFollowerAndFollowed(User follower, User followed);
 
     @Query(value = "SELECT followedid FROM follows GROUP BY followedid ORDER BY COUNT(*) DESC LIMIT 1", nativeQuery = true)
-    long findMostFollowedUserId();
+    Long findMostFollowedUserId();
 }

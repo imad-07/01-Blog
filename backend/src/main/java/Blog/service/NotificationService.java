@@ -40,7 +40,7 @@ public class NotificationService {
             NotificationResponse noresp = new NotificationResponse();
             User us = notification.getSender();
             Author u = new Author(us.getId(), us.getAvatar(), us.getUsername(),
-                    us.isStatus());
+                    us.isStatus(), us.getRole());
             noresp.setSender(u);
             noresp.setContent(notification.getContent());
             noresp.setSeen(notification.isSeen());

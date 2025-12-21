@@ -1,18 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
-import { Confirmation } from './confirmation';
+import { ConfirmationPopupComponent } from './confirmation';
 
-describe('Confirmation', () => {
-  let component: Confirmation;
-  let fixture: ComponentFixture<Confirmation>;
+describe('ConfirmationPopupComponent', () => {
+  let component: ConfirmationPopupComponent;
+  let fixture: ComponentFixture<ConfirmationPopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Confirmation]
+      imports: [ConfirmationPopupComponent, MatDialogModule],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: 'Test message' }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(Confirmation);
+    fixture = TestBed.createComponent(ConfirmationPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

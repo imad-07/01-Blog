@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 import { PostListComponent } from './post-list';
+import { AuthService } from '../../auth/auth.service';
+import { PostService } from '../authpost';
 
 describe('PostListComponent', () => {
   let component: PostListComponent;
@@ -8,9 +13,16 @@ describe('PostListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PostListComponent]
+      imports: [PostListComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideRouter([]),
+        { provide: AuthService, useValue: { whoami: () => Promise.resolve({ username: 'testuser' }) } },
+        { provide: PostService, useValue: { getposts: () => Promise.resolve([]) } }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(PostListComponent);
     component = fixture.componentInstance;

@@ -2,17 +2,14 @@
   <h2>News Updates</h2>
 
   @if (posts().length > 0) {
-    <div class="posts-grid">
-      <app-post-item
-        *ngFor="let post of posts()"
-        [post]="post"
-        [backendUrl]="backendUrl"
-        [currentUser]="user">
-      </app-post-item>
-    </div>
+  <div class="posts-grid">
+    <app-post-item *ngFor="let post of posts()" [post]="post" [backendUrl]="backendUrl" [currentUser]="user"
+      (onDelete)="handleDelete($event)">
+    </app-post-item>
+  </div>
   } @else {
-    <div class="no-posts">
-      <p>No posts to display yet.</p>
-    </div>
+  <div class="no-posts">
+    <p>No posts to display yet.</p>
+  </div>
   }
 </section>

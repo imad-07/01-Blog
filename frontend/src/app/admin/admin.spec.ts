@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
 import { Admin } from './admin';
+import { PostService } from '../posts/authpost';
 
 describe('Admin', () => {
   let component: Admin;
@@ -8,9 +12,15 @@ describe('Admin', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Admin]
+      imports: [Admin],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideRouter([]),
+        { provide: PostService, useValue: { GetAdmin: () => Promise.resolve({ posts: [], reports: [], users: [], dashboard: {} }) } }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;

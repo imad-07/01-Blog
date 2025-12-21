@@ -17,7 +17,7 @@
 
       <!-- User Cards Grid -->
       <div class="cards-grid">
-        <div class="user-card" *ngFor="let user of users();">
+        <div class="user-card" *ngFor="let user of users();" [routerLink]="['/profile', user.username]">
           <!-- Avatar Container -->
           <div class="card-avatar-section">
             <img [src]="getAvatarUrl(user.avatar)" [alt]="user.username" class="user-avatar" loading="lazy" />
@@ -25,14 +25,15 @@
           </div>
 
           <!-- User Info -->
-          <div class="card-content" >
-            <div class="user-info-section" [routerLink]="['/profile', user.username]">
+          <div class="card-content">
+            <div class="user-info-section">
               <h3 class="user-name">{{ user.username }}</h3>
               <p class="user-handle">@{{ user.username }}</p>
             </div>
 
             <!-- Follow Button -->
-            <button class="follow-button" [class.followed]="user.status" (click)="toggleFollow(user)"
+            <button class="follow-button" [class.followed]="user.status"
+              (click)="toggleFollow(user); $event.stopPropagation()"
               [attr.aria-label]="user.status ? 'Unfollow ' + user.username : 'Follow ' + user.username">
               <svg class="button-icon" *ngIf="!user.status" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

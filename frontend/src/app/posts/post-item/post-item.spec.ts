@@ -1,19 +1,40 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection, signal } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 
-import { PostItem } from './post-item';
+import { PostItemComponent } from './post-item';
 
-describe('PostItem', () => {
-  let component: PostItem;
-  let fixture: ComponentFixture<PostItem>;
+describe('PostItemComponent', () => {
+  let component: PostItemComponent;
+  let fixture: ComponentFixture<PostItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PostItem]
+      imports: [PostItemComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideRouter([])
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(PostItem);
+    fixture = TestBed.createComponent(PostItemComponent);
     component = fixture.componentInstance;
+    component.post = {
+      id: 1,
+      title: 'Test Post',
+      content: 'Test content',
+      timestamp: new Date(),
+      author: { username: 'testuser', avatar: '', name: 'Test' },
+      likes: 0,
+      comments: signal([]),
+      liked: signal(false),
+      showcmts: false,
+      cmts: 0,
+      status: 'Active'
+    };
     fixture.detectChanges();
   });
 

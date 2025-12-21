@@ -13,8 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reports", uniqueConstraints = @UniqueConstraint(columnNames = { "userid", "postid", "reason" }))
@@ -33,6 +35,13 @@ public class Report {
     @Column(nullable = false)
     private ReportReason reason;
     private boolean state;
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null)
+            createdAt = LocalDateTime.now();
+    }
 
     public boolean isState() {
         return state;
@@ -72,6 +81,14 @@ public class Report {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
 }

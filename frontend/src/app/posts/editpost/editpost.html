@@ -4,15 +4,22 @@
 
     <form (ngSubmit)="onSubmit()" enctype="multipart/form-data">
       <label>Title</label>
-      <input [(ngModel)]="title" name="title" maxlength="150" />
+      <input [ngModel]="title()" (ngModelChange)="title.set($event)" name="title" required placeholder="3-30 characters"
+        [class.invalid]="title() !== '' && !isTitleValid()" />
+      <div class="error-text" *ngIf="title() !== '' && !isTitleValid()">Title must be between 3 and 30 characters</div>
 
       <label>Content</label>
-      <textarea [(ngModel)]="content" name="content" rows="6" maxlength="5000"></textarea>
+      <textarea [ngModel]="content()" (ngModelChange)="content.set($event)" name="content" rows="6" required
+        placeholder="2-2500 characters" [class.invalid]="content() !== '' && !isContentValid()"></textarea>
+      <div class="error-text" *ngIf="content() !== '' && !isContentValid()">Content must be between 2 and 2500
+        characters</div>
 
-      <label>Media (optional)</label>
-      <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*" />
+      <label>Media (optional, max 20MB)</label>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*,video/*"
+        [class.invalid]="!isFileSizeValid()" />
+      <div class="error-text" *ngIf="!isFileSizeValid()">File size exceeds 20MB limit</div>
 
-      <ng-container *ngIf="mediaUrl && mediaUrl(); else showExisting">
+      <ng-container *ngIf="mediaUrl()">
         <div class="media-preview" [ngSwitch]="type">
           <div class="media-container" style="position: relative; display: inline-block;">
             <img *ngSwitchCase="'image'" [src]="mediaUrl()" alt="{{ title() }}" style="max-width: 100%;" />
@@ -23,12 +30,8 @@
         </div>
       </ng-container>
 
-      <ng-template #showExisting>
-        <div class="no-media">
-          <p>No media attached</p>
-        </div>
-      </ng-template>
-      <button type="submit" class="btn-primary">Save Changes</button>
+      <button type="submit" class="btn-primary" [disabled]="!isFormValid()" [class.disabled]="!isFormValid()">Save
+        Changes</button>
     </form>
 
     <p class="back-link">

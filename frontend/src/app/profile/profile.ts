@@ -15,7 +15,7 @@ import { ReportService } from '../services/report.service';
 })
 export class ProfileComponent {
   profile = signal<Profile>({
-    user: { username: '', avatar: '', status: false, id: 0 },
+    user: { username: '', avatar: '', status: false, id: 0, role: 'USER' },
     followers: [],
     following: [],
     posts: signal([]),
@@ -114,13 +114,18 @@ export class ProfileComponent {
   }
 
   submitUserReport(reason: string) {
+    this.closeReportPopup();
     this.reportService.reportUser(this.profile().user.id, reason).subscribe({
       next: () => {
-        this.closeReportPopup();
+        // Success handled by interceptor or silent
       },
       error: () => {
         // Error handled by interceptor
       }
     });
+  }
+
+  handleDelete(postId: number) {
+    this.profile().posts.update(p => p.filter(post => post.id !== postId));
   }
 }

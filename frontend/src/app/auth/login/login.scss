@@ -3,32 +3,24 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #f9f9f9;
+  background-color: var(--bg-primary);
   transition: background-color 0.3s ease;
 
-  @media (prefers-color-scheme: dark) {
-    background: #121212;
-  }
-
   .auth-card {
-    background: #ffffff;
+    background: var(--bg-card);
     border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px var(--shadow-color);
     padding: 2rem;
     width: 100%;
     max-width: 380px;
     text-align: center;
     transition: all 0.3s ease;
-
-    @media (prefers-color-scheme: dark) {
-      background: #1f1f1f;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    }
+    border: 1px solid var(--border-color);
 
     .logo {
       font-size: 1.6rem;
       font-weight: 700;
-      color: #667eea;
+      color: var(--accent-primary);
       text-decoration: none;
       display: inline-block;
       margin-bottom: 1.5rem;
@@ -41,13 +33,9 @@
     }
 
     h2 {
-      color: #333;
+      color: var(--text-primary);
       font-weight: 600;
       margin-bottom: 1.25rem;
-
-      @media (prefers-color-scheme: dark) {
-        color: #f5f5f5;
-      }
     }
 
     form {
@@ -59,37 +47,27 @@
       label {
         font-size: 0.9rem;
         font-weight: 500;
-        color: #666;
-
-        @media (prefers-color-scheme: dark) {
-          color: #ccc;
-        }
+        color: var(--text-secondary);
       }
 
       input {
         padding: 0.75rem 1rem;
         font-size: 0.95rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border-color);
         border-radius: 0.75rem;
-        color: #333;
-        background: #fafafa;
+        color: var(--text-primary);
+        background: var(--bg-input);
         transition: all 0.25s ease;
 
         &:focus {
-          border-color: #667eea;
+          border-color: var(--accent-primary);
           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
           outline: none;
-        }
-
-        @media (prefers-color-scheme: dark) {
-          background: #2a2a2a;
-          border-color: #444;
-          color: #eee;
         }
       }
 
       .btn-primary {
-        background: #667eea;
+        background: var(--accent-primary);
         border: none;
         color: #fff;
         padding: 0.75rem;
@@ -100,25 +78,16 @@
         transition: all 0.2s ease;
         box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: #5565e0;
           box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
           transform: translateY(-1px);
         }
 
-        &:active {
+        &:active:not(:disabled) {
           background: #4953b8;
           transform: translateY(0);
           box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
-        }
-
-        @media (prefers-color-scheme: dark) {
-          background: #667eea;
-          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-
-          &:hover {
-            background: #5565e0;
-          }
         }
       }
     }
@@ -126,10 +95,10 @@
     .switch-auth {
       margin-top: 1.25rem;
       font-size: 0.9rem;
-      color: #777;
+      color: var(--text-secondary);
 
       a {
-        color: #667eea;
+        color: var(--accent-primary);
         font-weight: 600;
         text-decoration: none;
         transition: color 0.2s ease;
@@ -137,10 +106,6 @@
         &:hover {
           color: #5565e0;
         }
-      }
-
-      @media (prefers-color-scheme: dark) {
-        color: #bbb;
       }
     }
   }

@@ -2,21 +2,21 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: auto;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  overflow-x: hidden;
+  overflow-y: auto;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   height: 465px;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid var(--border-color);
 
   &:hover {
     transform: translateY(-4px);
+    box-shadow: 0 4px 20px var(--shadow-color);
   }
 
   &.no-media {
-
     .content {
       justify-content: center;
       padding: 2rem;
@@ -24,11 +24,15 @@
       h3 {
         font-size: 1.4rem;
         margin-bottom: 1rem;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
 
       p {
         font-size: 1.1rem;
         line-height: 1.6;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
       }
     }
   }
@@ -56,12 +60,16 @@
     h3 {
       margin-bottom: 0.5rem;
       font-size: 1.2rem;
-      color: #333;
+      color: var(--text-primary);
+      overflow-wrap: break-word;
+      word-wrap: break-word;
     }
 
     p {
-      color: #555;
+      color: var(--text-secondary);
       font-size: 0.95rem;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
     }
   }
 
@@ -72,7 +80,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
 
     .author {
       display: flex;
@@ -88,7 +96,7 @@
 
       .username {
         font-size: 1rem;
-        color: #888;
+        color: var(--text-secondary);
       }
     }
   }
@@ -99,26 +107,26 @@
     align-items: center;
     gap: 1rem;
     padding: 0.75rem 1rem;
-    border-top: 1px solid #eee;
-    background-color: #fafafa;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
 
     .stats {
       display: flex;
       align-items: center;
       gap: 0.75rem;
       font-size: 0.8rem;
-      color: #666;
+      color: var(--text-secondary);
 
       button {
         background: none;
         border: none;
         cursor: pointer;
         font-weight: 500;
-        color: #555;
+        color: var(--text-secondary);
         transition: color 0.2s ease;
 
         &:hover {
-          color: #000;
+          color: var(--text-primary);
         }
       }
     }
@@ -128,18 +136,19 @@
       background: none;
       border: none;
       font-weight: 500;
-      color: #555;
+      color: var(--text-secondary);
       cursor: pointer;
 
       &:hover {
         text-decoration: underline;
+        color: var(--accent-primary);
       }
     }
 
     .report-btn {
       background: none;
       border: none;
-      color: #ff4d4f;
+      color: var(--error-text);
       font-weight: 500;
       cursor: pointer;
       transition: color 0.2s ease;
@@ -150,134 +159,13 @@
     }
   }
 
-  /* --- Report Popup --- */
-  .report-popup {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    animation: fadeIn 0.2s ease-out;
-
-    .popup-content {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 1rem;
-      min-width: 250px;
-      text-align: center;
-
-      h3 {
-        margin-bottom: 1rem;
-      }
-
-      .reasons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-
-        button {
-          padding: 0.5rem 0.75rem;
-          border-radius: 0.5rem;
-          border: 1px solid #ddd;
-          background-color: #f5f5f5;
-          cursor: pointer;
-          transition: background-color 0.2s;
-
-          &:hover {
-            background-color: #e0e0e0;
-          }
-        }
-      }
-
-      .close-btn {
-        background: none;
-        border: none;
-        color: #888;
-        font-weight: bold;
-        cursor: pointer;
-
-        &:hover {
-          color: #000;
-        }
-      }
-    }
-  }
-
   /* Hide scrollbar for posts */
   ::-webkit-scrollbar {
     display: none;
   }
-
-  /* --- Dark Mode --- */
-  @media (prefers-color-scheme: dark) {
-    background: #1f1f1f;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-
-    .content {
-      h3 {
-        color: #eee;
-      }
-
-      p {
-        color: #ccc;
-      }
-    }
-
-    .meta {
-      border-top: 1px solid #333;
-
-      .author .username {
-        color: #aaa;
-      }
-    }
-
-    .actions {
-      background-color: #2a2a2a;
-      border-top: 1px solid #333;
-
-      .stats button,
-      .edit-btn {
-        color: #ccc;
-
-        &:hover {
-          color: #fff;
-        }
-      }
-
-      .edit-btn {
-        color: #66b2ff;
-
-        &:hover {
-          color: #99cfff;
-          text-decoration: underline;
-        }
-      }
-
-      .report-btn {
-        color: #ff6666;
-
-        &:hover {
-          color: #ff4d4d;
-        }
-      }
-    }
-  }
-
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
 }
 
+/* --- Report Popup --- */
 .report-popup {
   position: fixed;
   top: 0;
@@ -292,16 +180,17 @@
   animation: fadeIn 0.2s ease-out;
 
   .popup-content {
-    background: #fff;
+    background: var(--bg-card);
     padding: 2rem;
     border-radius: 1rem;
     min-width: 300px;
     max-width: 90%;
     text-align: center;
+    border: 1px solid var(--border-color);
 
     h3 {
       margin-bottom: 1rem;
-      color: #333;
+      color: var(--text-primary);
     }
 
     .reasons {
@@ -313,14 +202,14 @@
       button {
         padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
-        border: 1px solid #ddd;
-        background-color: #f5f5f5;
-        color: #333;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-input);
+        color: var(--text-primary);
         cursor: pointer;
         transition: all 0.2s;
 
         &:hover {
-          background-color: #e0e0e0;
+          background-color: var(--border-color);
         }
       }
     }
@@ -328,62 +217,21 @@
     .close-btn {
       background: none;
       border: none;
-      color: #888;
+      color: var(--text-secondary);
       font-weight: bold;
       cursor: pointer;
 
       &:hover {
-        color: #000;
+        color: var(--text-primary);
       }
     }
   }
 
-  /* Dark mode */
+  /* Dark mode specific tweak for backdrop */
   @media (prefers-color-scheme: dark) {
     background-color: rgba(0, 0, 0, 0.7);
-
-    .popup-content {
-      background: #1f1f1f;
-
-      h3 {
-        color: #f0f0f0;
-      }
-
-      .reasons {
-        button {
-          background-color: #2a2a2a;
-          border: 1px solid #444;
-          color: #ddd;
-
-          &:hover {
-            background-color: #3a3a3a;
-          }
-        }
-      }
-
-      .close-btn {
-        color: #bbb;
-
-        &:hover {
-          color: #fff;
-        }
-      }
-    }
   }
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 
 @keyframes fadeIn {
   from {

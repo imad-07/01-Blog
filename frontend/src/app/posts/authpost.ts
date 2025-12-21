@@ -25,7 +25,8 @@ export class PostService {
     id: 0,
     username: 'unknown',
     avatar: '',
-    status: false
+    status: false,
+    role: 'USER'
   };
 
   private EMPTY_POST: Post = {

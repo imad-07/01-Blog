@@ -13,8 +13,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 
 /**
  * Entity representing a user report.
@@ -43,6 +45,13 @@ public class UserReport {
     private ReportReason reason;
 
     private boolean state; // false = pending, true = handled
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null)
+            createdAt = LocalDateTime.now();
+    }
 
     public long getId() {
         return id;
@@ -82,5 +91,13 @@ public class UserReport {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

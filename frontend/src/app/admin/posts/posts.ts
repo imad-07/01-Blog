@@ -3,7 +3,7 @@ import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core'
 import { AdminPost, Post, PostStatus, Report, getAvatarUrl } from '../../shared/models';
 import { Router } from '@angular/router';
 import { PostService } from '../../posts/authpost';
-import { log } from 'console';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-posts',
@@ -21,7 +21,7 @@ export class PostsComponent implements OnInit {
   lastReportid: number = 0;
   darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   getAvatarUrl = getAvatarUrl;
-  constructor(private router: Router, private psr: PostService) {
+  constructor(private router: Router, private psr: PostService, private snackbar: SnackbarService) {
   }
 
   ngOnInit(): void {
@@ -31,6 +31,12 @@ export class PostsComponent implements OnInit {
   }
   async onDelete(id: number) {
     const rsp = await this.psr.DeletePost(id);
+    if (rsp) {
+      this.posts.update(p => p.filter(post => post.id !== id));
+      this.snackbar.showMessage('Post deleted successfully');
+    } else {
+      this.snackbar.showMessage('Failed to delete post', true);
+    }
   }
   getStatusColor(status: PostStatus): string {
     const colors: Record<PostStatus, string> = {
@@ -41,12 +47,21 @@ export class PostsComponent implements OnInit {
   }
   async onToggleStatus(post: AdminPost) {
     const rsp = await this.psr.UpdatePostStatus(post.id);
-    post.status.set(rsp ? !post.status() : post.status())
-
+    if (rsp) {
+      post.status.set(!post.status());
+      this.snackbar.showMessage(`Post status updated to ${post.status() ? 'Active' : 'Hidden'}`);
+    } else {
+      this.snackbar.showMessage('Failed to update post status', true);
+    }
   }
   async OnToggleReport(report: Report) {
     const rsp = await this.psr.UpdateReportStatus(report.id);
-    report.state.set(rsp ? !report.state() : report.state())
+    if (rsp) {
+      report.state.set(!report.state());
+      this.snackbar.showMessage(`Report status updated to ${report.state() ? 'Handled' : 'Pending'}`);
+    } else {
+      this.snackbar.showMessage('Failed to update report status', true);
+    }
   }
   async Postinfinitescroll(ev: Event) {
     if (this.loadingpost) return;
@@ -68,7 +83,7 @@ export class PostsComponent implements OnInit {
       this.lastReportid = this.reports().length > 0 ? this.reports()[this.reports().length - 1].id : 1
       const reports = await this.psr.getAdminreports(this.lastReportid);
       console.log(reports);
-      
+
       this.reports.update(p => [...p, ...reports]);
       this.lastReportid = reports.length > 0 ? reports[reports.length - 1].id : 1;
       this.loadingreport = false;

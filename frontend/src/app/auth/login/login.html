@@ -4,12 +4,19 @@
     <h2>Sign In</h2>
     <form (ngSubmit)="onSubmit()">
       <label>Username</label>
-      <input [(ngModel)]="username" name="username" required>
+      <input [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" required
+        placeholder="Username" [class.invalid]="username() !== '' && !isUsernameValid()">
+      <div class="error-text" *ngIf="username() !== '' && !isUsernameValid()">Username must be between 4 and 24
+        characters</div>
 
       <label>Password</label>
-      <input [(ngModel)]="password" name="password" type="password" required>
+      <input [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" type="password" required
+        placeholder="Password" [class.invalid]="password() !== '' && !isPasswordValid()">
+      <div class="error-text" *ngIf="password() !== '' && !isPasswordValid()">Password must be between 4 and 24
+        characters</div>
 
-      <button type="submit" class="btn-primary">Login</button>
+      <button type="submit" class="btn-primary" [disabled]="!isFormValid()"
+        [class.disabled]="!isFormValid()">Login</button>
     </form>
     <p class="switch-auth">
       Don’t have an account? <a routerLink="/register">Register</a>

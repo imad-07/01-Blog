@@ -36,7 +36,7 @@
   </app-post-comments>
 </article>
 
-<div class="report-popup" *ngIf="showReportPopup && selectedPostId === post.id">
+<div class="report-popup" *ngIf="showReportPopup() && selectedPostId() === post.id">
   <div class="popup-content">
     <h3>Report Post</h3>
     <div class="reasons">

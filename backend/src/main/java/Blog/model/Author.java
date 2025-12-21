@@ -5,25 +5,31 @@ public class Author {
     private String username;
     private boolean status;
     private long id;
+    private String role;
+
     public Author() {
     }
 
-    public Author(long id,String avatar, String username, boolean status) {
+    public Author(long id, String avatar, String username, boolean status, String role) {
         this.avatar = avatar;
         this.username = username;
         this.status = status;
         this.id = id;
+        this.role = role;
     }
 
     public boolean isStatus() {
         return status;
     }
+
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
+
     public void setStatus(boolean status) {
         this.status = status;
     }
@@ -44,4 +50,11 @@ public class Author {
         this.username = username;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

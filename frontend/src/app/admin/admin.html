@@ -2,9 +2,9 @@
     <aside class="sidebar">
         <h2>Admin Panel</h2>
         <nav>
-            <button (click)="currentView = 'dashboard'">Dashboard</button>
-            <button (click)="currentView = 'posts'">Posts</button>
-            <button (click)="currentView = 'users'">Users</button>
+            <button (click)="setView('dashboard')">Dashboard</button>
+            <button (click)="setView('posts')">Posts</button>
+            <button (click)="setView('users')">Users</button>
             <button routerLink="feed">Home</button>
             <button routerLink="/profile/admin">Profile</button>
         </nav>
@@ -18,7 +18,10 @@
         <section class="content">
             <app-dashboard *ngIf="currentView === 'dashboard'" [dashboard]="Dashboard()"></app-dashboard>
             <app-posts *ngIf="currentView === 'posts'" [posts]=Posts [reports]="Reports"></app-posts>
-            <app-users *ngIf="currentView === 'users'"[users]="Users" [totalactiveusers]="admin.dashboard.totalactiveusers" [totalsuspendedusers]="admin.dashboard.totalsuspendedusers"[totalusers]="admin.dashboard.totalusers"></app-users>
+            <app-users *ngIf="currentView === 'users'" [users]="Users"
+                [totalactiveusers]="admin.dashboard.totalactiveusers"
+                [totalsuspendedusers]="admin.dashboard.totalsuspendedusers"
+                [totalusers]="admin.dashboard.totalusers"></app-users>
         </section>
     </main>
 </div>

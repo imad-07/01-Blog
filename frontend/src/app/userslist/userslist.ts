@@ -33,9 +33,23 @@ export class UserslistComponent implements OnInit {
   }
 
   async toggleFollow(user: Author) {
-    const rsp = await this.psr.follow(user.username);
-    if (rsp) {
+    // Optimistic toggle
+    user.status = !user.status;
+    this.users.set([...this.users()]); // Re-emit signal to trigger UI update
+
+    try {
+      const rsp = await this.psr.follow(user.username);
+      if (!rsp) {
+        // Revert if failed
+        user.status = !user.status;
+        this.users.set([...this.users()]);
+        console.error('Failed to toggle follow status');
+      }
+    } catch (err) {
+      // Revert if errored
       user.status = !user.status;
+      this.users.set([...this.users()]);
+      console.error('Error toggling follow status:', err);
     }
   }
 

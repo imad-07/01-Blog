@@ -1,9 +1,10 @@
-import { Component, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal, computed } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Post } from '../../shared/models';
+import { SnackbarService } from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-editpost',
@@ -15,9 +16,9 @@ export class EditPost implements OnInit {
 
   postId!: number;
   title: WritableSignal<string> = signal('');
-  content = '';
+  content = signal('');
   type = '';
-  mediaUrl?: WritableSignal<string | ArrayBuffer | null> = signal(null);
+  mediaUrl: WritableSignal<string | ArrayBuffer | null> = signal(null);
   selectedFile: WritableSignal<File | null> = signal(null);
   previewUrl: WritableSignal<string | ArrayBuffer | null> = signal(null);
   existingMediaUrl: string | null = null;
@@ -26,7 +27,15 @@ export class EditPost implements OnInit {
   originalTitle = '';
   originalContent = '';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) { }
+  isTitleValid = computed(() => this.title().length >= 3 && this.title().length <= 30);
+  isContentValid = computed(() => this.content().length >= 2 && this.content().length <= 2500);
+  isFileSizeValid = computed(() => {
+    const file = this.selectedFile();
+    return !file || file.size <= 20 * 1024 * 1024;
+  });
+  isFormValid = computed(() => this.isTitleValid() && this.isContentValid() && this.isFileSizeValid());
+
+  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, private snackbar: SnackbarService) { }
 
   ngOnInit() {
     this.postId = Number(this.route.snapshot.paramMap.get('id'));
@@ -39,11 +48,11 @@ export class EditPost implements OnInit {
           console.log(post);
           this.type = post.media?.type || '';
           this.title.set(post.title);
-          this.content = post.content;
+          this.content.set(post.content);
           if (post.media && post.media.url) {
-            this.mediaUrl?.set(`http://localhost:8080/files/posts/${post.media.url}`);
+            this.mediaUrl.set(`http://localhost:8080/files/posts/${post.media.url}`);
           } else {
-            this.mediaUrl?.set(null);
+            this.mediaUrl.set(null);
           }
           this.originalTitle = post.title;
           this.originalContent = post.content;
@@ -57,34 +66,38 @@ export class EditPost implements OnInit {
       const file = input.files[0];
       this.selectedFile.set(file);
 
-      const reader = new FileReader();
-      reader.onload = () => this.mediaUrl?.set(reader.result);
-      reader.readAsDataURL(file);
+      if (file.size <= 20 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = () => this.mediaUrl.set(reader.result);
+        reader.readAsDataURL(file);
+      } else {
+        this.mediaUrl.set(null);
+        this.snackbar.showMessage('File size exceeds 20MB limit', true);
+      }
       this.type = file.type.startsWith("image") ? "image" : "video";
-      console.log(this.type);
-
-
     } else {
       this.selectedFile.set(null);
-      this.mediaUrl?.set(null);
+      this.mediaUrl.set(null);
     }
     this.deleteMedia = false;
   }
 
   removeMedia() {
-    this.mediaUrl?.set(null);
+    this.mediaUrl.set(null);
     this.selectedFile.set(null);
     this.deleteMedia = true;
   }
 
   onSubmit() {
+    if (!this.isFormValid()) return;
+
     const token = localStorage.getItem('JWT');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     const postPayload: any = {
       id: this.postId,
       title: this.title(),
-      content: this.content
+      content: this.content()
     };
 
     if (this.deleteMedia) {
@@ -102,7 +115,16 @@ export class EditPost implements OnInit {
     }
 
     this.http.patch(`http://localhost:8080/post`, formData, { headers })
-      .subscribe(() => console.log('Post updated successfully'));
+      .subscribe({
+        next: () => {
+          this.snackbar.showMessage('changed applied successfully');
+          console.log('Post updated successfully');
+        },
+        error: (err) => {
+          this.snackbar.showMessage('Failed to apply changes', true);
+          console.error('Failed to update post:', err);
+        }
+      });
   }
 
   onbackClick(): void {
